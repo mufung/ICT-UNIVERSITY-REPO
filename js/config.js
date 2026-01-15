@@ -1,7 +1,7 @@
 const _config = {
     cognito: {
         userPoolId: 'us-west-1_mWMVK9JTt',
-        userPoolClientId: '2nvt55hgmp4dr3305drocl11dt',
+        userPoolClientId: '53mnaeufjru4tpvvh3lq74dkce',
         region: 'us-west-1'
     },
     api: {
