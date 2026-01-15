@@ -30,82 +30,46 @@
     <p>© ICT University | Powered by AWS</p>
 </footer>
 
-    <script>
-function parseTokens() {
-  if (!window.location.hash) return null;
-
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-
-  return {
-    idToken: params.get("id_token"),
-    accessToken: params.get("access_token"),
-    expiresIn: params.get("expires_in")
-  };
-}
-
-const tokens = parseTokens();
-
-if (tokens && tokens.idToken) {
-  console.log("ID TOKEN:", tokens.idToken);
-  console.log("ACCESS TOKEN:", tokens.accessToken);
-
-  // Save tokens
-  localStorage.setItem("idToken", tokens.idToken);
-  localStorage.setItem("accessToken", tokens.accessToken);
-
-  // Remove tokens from URL
-  window.history.replaceState({}, document.title, "/");
-}
-</script>
-
-    <script>
-function decodeJwt(token) {
-  const payload = token.split('.')[1];
-  const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-  return JSON.parse(decoded);
-}
-
-const idToken = localStorage.getItem("idToken");
-
-if (idToken) {
-  const user = decodeJwt(idToken);
-  console.log("DECODED USER:", user);
-
-  // Example fields
-  console.log("Email:", user.email);
-  console.log("User ID:", user.sub);
-}
-</script>
-
-
+    
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
-const hash = window.location.hash;
-const params = new URLSearchParams(hash.substring(1));
-const newToken = params.get("id_token");
+  // 1. Read tokens from URL (after Cognito redirect)
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  const idTokenFromUrl = params.get("id_token");
 
-// Save token after Cognito login
-if (newToken) {
-  localStorage.setItem("idToken", newToken);
-  window.location.hash = "";
-}
+  if (idTokenFromUrl) {
+    localStorage.setItem("idToken", idTokenFromUrl);
 
-const idToken = localStorage.getItem("idToken");
-
-// If user already logged in, route them
-if (idToken) {
-  const user = jwt_decode(idToken);
-  const groups = user["cognito:groups"] || [];
-
-  if (groups.includes("Teachers")) {
-    window.location.href = "dashboard_teacher.html";
-  } else if (groups.includes("Students")) {
-    window.location.href = "dashboard_student.html";
+    // Clean URL
+    window.history.replaceState({}, document.title, "/");
   }
-}
+
+  // 2. Read token from storage
+  const idToken = localStorage.getItem("idToken");
+
+  if (idToken) {
+    const user = jwt_decode(idToken);
+    const groups = user["cognito:groups"] || [];
+
+    console.log("Groups:", groups);
+
+    // 3. Redirect based on role
+    if (groups.includes("Teachers")) {
+      window.location.replace("dashboard_teacher.html");
+    } 
+    else if (groups.includes("Students")) {
+      window.location.replace("dashboard_student.html");
+    } 
+    else {
+      alert("No role assigned. Contact admin.");
+      localStorage.removeItem("idToken");
+    }
+  }
 </script>
+ 
+  
     
 </body>
 </html>
