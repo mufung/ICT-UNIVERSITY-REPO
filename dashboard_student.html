@@ -1,12 +1,26 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Student Dashboard</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <h1>🎓 Student Dashboard</h1>
-  <p>Welcome, Student!</p>
 
-  <a href="index.html">Logout</a>
+<header>
+  <h1>Student Dashboard</h1>
+</header>
+
+<main>
+  <p>Welcome, Student.</p>
+  <button onclick="logout()">Logout</button>
+</main>
+
+<script>
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
+
 </body>
 </html>
