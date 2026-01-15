@@ -78,5 +78,26 @@ if (idToken) {
 }
 </script>
 
+
+    <script>
+if (idToken) {
+  const user = decodeJwt(idToken);
+
+  const groups = user["cognito:groups"] || [];
+
+  console.log("User groups:", groups);
+
+  if (groups.includes("Teachers")) {
+    console.log("This is a TEACHER");
+    // window.location.href = "teacher.html";
+  } else if (groups.includes("Students")) {
+    console.log("This is a STUDENT");
+    // window.location.href = "student.html";
+  } else {
+    console.log("No role assigned");
+  }
+}
+</script>
+
 </body>
 </html>
