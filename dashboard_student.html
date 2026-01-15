@@ -25,26 +25,7 @@
 <script src="js/student.js"></script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
-<script>
-const hash = window.location.hash;
-const params = new URLSearchParams(hash.substring(1));
-const idToken = params.get("id_token");
-
-if (!idToken) {
-  alert("You must log in first.");
-  window.location.href = "index.html";
-} else {
-  const user = jwt_decode(idToken);
-  const groups = user["cognito:groups"] || [];
-
-  if (!groups.includes("Students")) {
-    alert("Access denied. Students only.");
-    window.location.href = "index.html";
-  }
-}
-</script>
+ 
     
 </body>
 </html>
