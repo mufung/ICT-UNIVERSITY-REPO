@@ -79,20 +79,23 @@ if (idToken) {
 </script>
 
 
-   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
 const hash = window.location.hash;
 const params = new URLSearchParams(hash.substring(1));
-const idToken = params.get("id_token");
+const newToken = params.get("id_token");
 
-if (!idToken) {
-  // Not logged in → show login button
-  console.log("No token yet");
-} else {
-  // Save token ONCE
-  localStorage.setItem("idToken", idToken);
+// Save token after Cognito login
+if (newToken) {
+  localStorage.setItem("idToken", newToken);
+  window.location.hash = "";
+}
 
+const idToken = localStorage.getItem("idToken");
+
+// If user already logged in, route them
+if (idToken) {
   const user = jwt_decode(idToken);
   const groups = user["cognito:groups"] || [];
 
@@ -100,8 +103,6 @@ if (!idToken) {
     window.location.href = "dashboard_teacher.html";
   } else if (groups.includes("Students")) {
     window.location.href = "dashboard_student.html";
-  } else {
-    alert("No role assigned.");
   }
 }
 </script>
