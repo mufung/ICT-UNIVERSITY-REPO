@@ -1,10 +1,10 @@
 const _config = {
     cognito: {
-        userPoolId: 'us-west-1_mWMVK9JTt',
-        userPoolClientId: '2nvt55hgmp4dr3305drocl11dt',
+        userPoolId: 'us-west-1_mbnfq4DcV',
+        userPoolClientId: '7ugvqkg6l7859oto4v5vcjqjus',
         region: 'us-west-1'
     },
     api: {
-        invokeUrl: 'YOUR_API_GATEWAY_URL'
+        invokeUrl: '' // leave empty for now, we will add API Gateway later
     }
 };
