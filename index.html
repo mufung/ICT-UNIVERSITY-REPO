@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ICT University Portal</title>
-  < style >
+  <title>ICT University | Secure Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #0f4c81, #1e88e5);
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       color: white;
       height: 100vh;
       display: flex;
@@ -17,7 +19,8 @@
     }
 
     h1 {
-      margin-bottom: 10px;
+      margin-bottom: 5px;
+      font-size: 42px;
     }
 
     p {
@@ -36,13 +39,13 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      background-color: white;
-      color: #0f4c81;
+      background: #ffffff;
+      color: #203a43;
       font-weight: bold;
     }
 
     button:hover {
-      opacity: 0.9;
+      opacity: 0.85;
     }
 
     footer {
@@ -53,22 +56,35 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>ICT UNIVERSITY</h1>
-  <p>Powered by AWS — Secure Cloud Portal</p>
+  <p>Powered by AWS • Secure Cloud Portal</p>
 
   <div class="buttons">
-    <button onclick="loginAs('student')">Login as Student</button>
-    <button onclick="loginAs('teacher')">Login as Teacher</button>
+    <button onclick="login('Students')">Login as Student</button>
+    <button onclick="login('Teachers')">Login as Teacher</button>
   </div>
 
   <footer>© ICT University</footer>
 
   <script>
-    function loginAs(role) {
-      localStorage.setItem("userRole", role);
-      window.location.href = "signin.html";
+    const COGNITO_DOMAIN = "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com";
+    const CLIENT_ID = "7ugvqkg6l7859oto4v5vcjqjus";
+    const REDIRECT_URI = "https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
+
+    function login(role) {
+      localStorage.setItem("expectedRole", role);
+
+      const loginUrl =
+        `${COGNITO_DOMAIN}/login` +
+        `?client_id=${CLIENT_ID}` +
+        `&response_type=token` +
+        `&scope=openid+email+profile` +
+        `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+
+      window.location.href = loginUrl;
     }
   </script>
 
