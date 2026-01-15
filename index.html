@@ -17,8 +17,9 @@
   <p>Please choose how you want to log in</p>
 
   <div class="buttons">
-    <button onclick="goLogin('student')">Login as Student</button>
-    <button onclick="goLogin('teacher')">Login as Teacher</button>
+   <button onclick="loginAs('student')">Login as Student</button>
+<button onclick="loginAs('teacher')">Login as Teacher</button>
+
   </div>
 </main>
 
@@ -32,6 +33,14 @@
     window.location.href = "signin.html";
   }
 </script>
+
+ <script>
+  function loginAs(role) {
+    localStorage.setItem("userRole", role);
+    window.location.href = "signin.html";
+  }
+</script>
+
 
 </body>
 </html>
