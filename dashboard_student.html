@@ -2,25 +2,19 @@
 <html>
 <head>
   <title>Student Dashboard</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
-  <h1>Student Dashboard</h1>
-  <p>Welcome, Student.</p>
 
-  <button onclick="logout()">Logout</button>
+<h1>Student Dashboard</h1>
+<p>Welcome, Student</p>
 
-  <script>
-    const token = sessionStorage.getItem("idToken");
+<script>
+if (!sessionStorage.getItem("idToken")) {
+  window.location.href = "signin.html";
+}
+</script>
 
-    if (!token) {
-      window.location.href = "index.html";
-    }
-
-    function logout() {
-      sessionStorage.clear();
-      window.location.href = "index.html";
-    }
-  </script>
 </body>
 </html>
-
