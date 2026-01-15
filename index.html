@@ -79,25 +79,28 @@ if (idToken) {
 </script>
 
 
-    <script>
-if (idToken) {
-  const user = decodeJwt(idToken);
+   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
-  const groups = user["cognito:groups"] || [];
+<script>
+  if (idToken) {
+    const user = jwt_decode(idToken);
 
-  console.log("User groups:", groups);
+    const groups = user["cognito:groups"] || [];
 
-  if (groups.includes("Teachers")) {
-    console.log("This is a TEACHER");
-    // window.location.href = "teacher.html";
-  } else if (groups.includes("Students")) {
-    console.log("This is a STUDENT");
-    // window.location.href = "student.html";
-  } else {
-    console.log("No role assigned");
+    console.log("User groups:", groups);
+
+    if (groups.includes("Teachers")) {
+      console.log("This is a TEACHER");
+      window.location.href = "teacher.html";
+    } else if (groups.includes("Students")) {
+      console.log("This is a STUDENT");
+      window.location.href = "student.html";
+    } else {
+      console.log("No role assigned");
+      alert("You do not have a role assigned. Contact admin.");
+    }
   }
-}
 </script>
-
+    
 </body>
 </html>
