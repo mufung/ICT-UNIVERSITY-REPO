@@ -1,63 +1,58 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Authenticating...</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0f2027;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-  </style>
 </head>
-
 <body>
 
-  <h2>Signing you in…</h2>
+<script>
+/*
+ STEP 1: Get token from URL
+ Cognito redirects like:
+ auth-callback.html#id_token=XXXX&access_token=YYYY
+*/
 
-  <script>
-    function getHashParams() {
-      const hash = window.location.hash.substring(1);
-      const params = {};
-      hash.split("&").forEach(item => {
-        const parts = item.split("=");
-        params[parts[0]] = decodeURIComponent(parts[1]);
-      });
-      return params;
-    }
+const hash = window.location.hash.substring(1);
+const params = new URLSearchParams(hash);
 
-    const params = getHashParams();
-    const idToken = params.id_token;
+const idToken = params.get("id_token");
 
-    if (!idToken) {
-      alert("Authentication failed. No token received.");
-      window.location.href = "index.html";
-    }
+if (!idToken) {
+  alert("Authentication failed: No token received");
+  window.location.href = "index.html";
+}
 
-    const decoded = jwt_decode(idToken);
-    const groups = decoded["cognito:groups"] || [];
+/*
+ STEP 2: Decode JWT (NO LIBRARY NEEDED)
+*/
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  return JSON.parse(atob(base64));
+}
 
-    localStorage.setItem("idToken", idToken);
+const decoded = parseJwt(idToken);
 
-    if (groups.includes("Teachers")) {
-      window.location.href = "teacher-dashboard.html";
-    } 
-    else if (groups.includes("Students")) {
-      window.location.href = "student-dashboard.html";
-    } 
-    else {
-      alert("No role assigned. Contact administrator.");
-      window.location.href = "index.html";
-    }
-  </script>
+/*
+ STEP 3: Read Cognito groups
+*/
+const groups = decoded["cognito:groups"] || [];
+
+/*
+ STEP 4: Redirect based on role
+*/
+if (groups.includes("Students")) {
+  window.location.replace("student-dashboard.html");
+}
+else if (groups.includes("Teachers")) {
+  window.location.replace("teacher-dashboard.html");
+}
+else {
+  alert("User has no role assigned. Contact admin.");
+  window.location.replace("index.html");
+}
+</script>
 
 </body>
 </html>
