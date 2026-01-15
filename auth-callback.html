@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Signing In...</title>
+  <title>Signing you in...</title>
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 </head>
+
 <body>
-  <p>Signing you in, please wait...</p>
+  <p>Authenticating...</p>
 
-  <script>
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const idToken = params.get("id_token");
+<script>
+const hash = window.location.hash.substring(1);
+const params = new URLSearchParams(hash);
+const idToken = params.get("id_token");
 
-    if (!idToken) {
-      alert("Authentication failed.");
-      window.location.href = "index.html";
-    } else {
-      sessionStorage.setItem("idToken", idToken);
+if (!idToken) {
+  window.location.href = "signin.html";
+}
 
-      const decoded = jwt_decode(idToken);
-      const groups = decoded["cognito:groups"] || [];
+sessionStorage.setItem("idToken", idToken);
 
-      if (groups.includes("Students")) {
-        window.location.href = "student.html";
-      } else if (groups.includes("Teachers")) {
-        window.location.href = "teacher.html";
-      } else {
-        alert("No role assigned to this account.");
-        window.location.href = "index.html";
-      }
-    }
-  </script>
+const decoded = jwt_decode(idToken);
+const groups = decoded["cognito:groups"] || [];
+
+if (groups.includes("Students")) {
+  window.location.href = "dashboard_student.html";
+}
+else if (groups.includes("Teachers")) {
+  window.location.href = "dashboard_teacher.html";
+}
+else {
+  alert("No role assigned. Contact admin.");
+  window.location.href = "signin.html";
+}
+</script>
+
 </body>
 </html>
