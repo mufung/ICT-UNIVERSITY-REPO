@@ -31,14 +31,14 @@
 const idToken = localStorage.getItem("idToken");
 
 if (!idToken) {
-  alert("Please log in first.");
+  alert("Please log in first");
   window.location.href = "index.html";
 } else {
   const user = jwt_decode(idToken);
   const groups = user["cognito:groups"] || [];
 
   if (!groups.includes("Students")) {
-    alert("Access denied.");
+    alert("Access denied: Students only");
     window.location.href = "index.html";
   }
 }
