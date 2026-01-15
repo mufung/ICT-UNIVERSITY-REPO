@@ -81,27 +81,29 @@ if (idToken) {
 
    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
 <script>
-  if (idToken) {
-    const user = jwt_decode(idToken);
+const hash = window.location.hash;
+const params = new URLSearchParams(hash.substring(1));
+const idToken = params.get("id_token");
 
-    const groups = user["cognito:groups"] || [];
+if (!idToken) {
+  // Not logged in → show login button
+  console.log("No token yet");
+} else {
+  // Save token ONCE
+  localStorage.setItem("idToken", idToken);
 
-    console.log("User groups:", groups);
+  const user = jwt_decode(idToken);
+  const groups = user["cognito:groups"] || [];
 
-    if (groups.includes("Teachers")) {
-      console.log("This is a TEACHER");
-      window.location.href = "dashboard_teacher.html";
-    } else if (groups.includes("Students")) {
-      console.log("This is a STUDENT");
-      window.location.href = "dashboard_student.html";
-    } else {
-      console.log("No role assigned");
-      alert("You do not have a role assigned. Contact admin.");
-    }
+  if (groups.includes("Teachers")) {
+    window.location.href = "dashboard_teacher.html";
+  } else if (groups.includes("Students")) {
+    window.location.href = "dashboard_student.html";
+  } else {
+    alert("No role assigned.");
   }
+}
 </script>
     
 </body>
