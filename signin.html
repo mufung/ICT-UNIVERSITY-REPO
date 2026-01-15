@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sign In | ICT University</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <title>Login | ICT University</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
 
-<div class="form-box">
-    <h2>Sign In</h2>
+<body class="auth-body">
 
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+<h2>University Login</h2>
+<p>Please sign in to continue</p>
 
-    <button onclick="signIn()">Sign In</button>
+<button onclick="login()">Sign In</button>
 
-    <p>Don't have an account? <a href="register.html">Register</a></p>
-</div>
+<p>
+  New user?
+  <a href="register.html">Register here</a>
+</p>
 
-<script src="js/config.js"></script>
-<script src="js/auth.js"></script>
+<script>
+function login() {
+  const domain = "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com";
+  const clientId = "7ugvqkg6l7859oto4v5vcjqjus";
+  const redirectUri = "https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
+
+  window.location.href =
+    domain + "/login" +
+    "?client_id=" + clientId +
+    "&response_type=token" +
+    "&scope=openid+email+profile" +
+    "&prompt=login" +
+    "&redirect_uri=" + redirectUri;
+}
+</script>
+
 </body>
 </html>
