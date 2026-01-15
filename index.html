@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>University App</title>
+  <title>University Portal</title>
 </head>
 <body>
-  <h1>Welcome</h1>
+  <h1>University Management System</h1>
+  <p>Select how you want to log in:</p>
 
   <button onclick="login()">Login</button>
 
   <script>
     function login() {
+      const cognitoDomain = "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com";
+      const clientId = "7ugvqkg6l7859oto4v5vcjqjus";
+      const redirectUri = "https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
+
       window.location.href =
-        "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/login" +
-        "?client_id=7ugvqkg6l7859oto4v5vcjqjus" +
+        cognitoDomain + "/login" +
+        "?client_id=" + clientId +
         "&response_type=token" +
         "&scope=openid+email+profile" +
-        "&redirect_uri=https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
+        "&redirect_uri=" + redirectUri;
     }
   </script>
 </body>
