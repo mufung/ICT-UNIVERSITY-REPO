@@ -30,5 +30,34 @@
     <p>© ICT University | Powered by AWS</p>
 </footer>
 
+    <script>
+function parseTokens() {
+  if (!window.location.hash) return null;
+
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+
+  return {
+    idToken: params.get("id_token"),
+    accessToken: params.get("access_token"),
+    expiresIn: params.get("expires_in")
+  };
+}
+
+const tokens = parseTokens();
+
+if (tokens && tokens.idToken) {
+  console.log("ID TOKEN:", tokens.idToken);
+  console.log("ACCESS TOKEN:", tokens.accessToken);
+
+  // Save tokens
+  localStorage.setItem("idToken", tokens.idToken);
+  localStorage.setItem("accessToken", tokens.accessToken);
+
+  // Remove tokens from URL
+  window.history.replaceState({}, document.title, "/");
+}
+</script>
+
 </body>
 </html>
