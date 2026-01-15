@@ -1,57 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ICT University | Results Portal</title>
-  <link rel="stylesheet" href="css/main.css">
+    <meta charset="UTF-8">
+    <title>ICT University | Results Portal</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
 <header class="header">
-  <h1>ICT University</h1>
-  <p>Smart Results Management System</p>
+    <h1>ICT University</h1>
+    <p>Smart Results Management System</p>
 </header>
 
 <div class="container">
-  <div class="card">
-    <h2>Students</h2>
-    <p>View results, report errors, track corrections.</p>
-    <a href="signin.html" class="btn">Student Login</a>
-  </div>
+    <div class="card">
+        <h2>Students</h2>
+        <p>View results, report errors, track corrections.</p>
+        <a href="signin.html" class="btn">Student Login</a>
+    </div>
 
-  <div class="card">
-    <h2>Teachers</h2>
-    <p>Upload results, review student requests.</p>
-    <a href="signin.html" class="btn">Teacher Login</a>
-  </div>
+    <div class="card">
+        <h2>Teachers</h2>
+        <p>Upload results, review student requests.</p>
+        <a href="signin.html" class="btn">Teacher Login</a>
+    </div>
 </div>
 
 <footer>
-  <p>© ICT University | Powered by AWS</p>
+    <p>© ICT University | Powered by AWS</p>
 </footer>
-
-<!-- JWT decode -->
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
-<script>
-/*
-  INDEX LOGIC RULES
-  -----------------
-  - Save token if coming from Cognito
-  - DO NOT auto-redirect
-  - Let user choose dashboard via login buttons
-*/
-
-// 1. Save token after Cognito redirect
-const hash = window.location.hash.substring(1);
-const params = new URLSearchParams(hash);
-const idTokenFromUrl = params.get("id_token");
-
-if (idTokenFromUrl) {
-  localStorage.setItem("idToken", idTokenFromUrl);
-  window.history.replaceState({}, document.title, "/");
-}
-</script>
 
 </body>
 </html>
