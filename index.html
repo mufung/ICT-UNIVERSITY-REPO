@@ -1,84 +1,36 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>ICT University Portal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b5ed7;
-      color: white;
-      text-align: center;
-    }
-    header {
-      padding: 20px;
-      font-size: 26px;
-      font-weight: bold;
-    }
-    .subtitle {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-    .container {
-      margin-top: 80px;
-    }
-    .btn {
-      padding: 15px 30px;
-      margin: 15px;
-      font-size: 18px;
-      border: none;
-      cursor: pointer;
-      border-radius: 6px;
-    }
-    .student {
-      background: #ffc107;
-      color: #000;
-    }
-    .teacher {
-      background: #20c997;
-      color: #000;
-    }
-    footer {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
-      font-size: 12px;
-      opacity: 0.8;
-    }
-  </style>
+  <link rel="stylesheet" href="css/main.css">
 </head>
-
 <body>
 
 <header>
-  ICT UNIVERSITY
-  <div class="subtitle">Powered by AWS</div>
+  <h1>ICT UNIVERSITY</h1>
+  <p class="subtitle">Powered by AWS</p>
 </header>
 
-<div class="container">
+<main>
   <h2>Welcome to the University Portal</h2>
   <p>Please choose how you want to log in</p>
 
-  <button class="btn student" onclick="login()">Login as Student</button>
-  <button class="btn teacher" onclick="login()">Login as Teacher</button>
-</div>
+  <div class="buttons">
+    <button onclick="goLogin('student')">Login as Student</button>
+    <button onclick="goLogin('teacher')">Login as Teacher</button>
+  </div>
+</main>
 
 <footer>
   © ICT University — Secure Cloud Portal
 </footer>
 
 <script>
-function login() {
-  window.location.href =
-    "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/login" +
-    "?client_id=7ugvqkg6l7859oto4v5vcjqjus" +
-    "&response_type=code" +
-    "&scope=openid+email+profile" +
-    "&redirect_uri=https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
-}
+  function goLogin(role) {
+    localStorage.setItem("loginRole", role);
+    window.location.href = "signin.html";
+  }
 </script>
 
 </body>
