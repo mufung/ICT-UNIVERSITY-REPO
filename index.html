@@ -82,24 +82,21 @@ if (idToken) {
    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
-  if (idToken) {
-    const user = jwt_decode(idToken);
+if (idToken) {
+  const user = jwt_decode(idToken);
 
-    const groups = user["cognito:groups"] || [];
+  const groups = user["cognito:groups"] || [];
 
-    console.log("User groups:", groups);
+  console.log("User groups:", groups);
 
-    if (groups.includes("Teachers")) {
-      console.log("This is a TEACHER");
-      window.location.href = "teacher.html";
-    } else if (groups.includes("Students")) {
-      console.log("This is a STUDENT");
-      window.location.href = "student.html";
-    } else {
-      console.log("No role assigned");
-      alert("You do not have a role assigned. Contact admin.");
-    }
+  if (groups.includes("Teachers")) {
+    window.location.href = "dashboard_teacher.html";
+  } else if (groups.includes("Students")) {
+    window.location.href = "dashboard_student.html";
+  } else {
+    alert("You do not have a role assigned. Contact admin.");
   }
+}
 </script>
     
 </body>
