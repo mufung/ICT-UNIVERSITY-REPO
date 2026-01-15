@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signing you in...</title>
+</head>
+<body>
+
+<p>Signing you in, please wait...</p>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+<script>
+const hash = window.location.hash.substring(1);
+const params = new URLSearchParams(hash);
+const idToken = params.get("id_token");
+
+if (!idToken) {
+  window.location.replace("index.html");
+} else {
+  localStorage.setItem("idToken", idToken);
+
+  const user = jwt_decode(idToken);
+  const groups = user["cognito:groups"] || [];
+
+  if (groups.includes("Teachers")) {
+    window.location.replace("dashboard_teacher.html");
+  } 
+  else if (groups.includes("Students")) {
+    window.location.replace("dashboard_student.html");
+  } 
+  else {
+    alert("No role assigned. Contact admin.");
+    localStorage.removeItem("idToken");
+    window.location.replace("index.html");
+  }
+}
+</script>
+
+</body>
+</html>
