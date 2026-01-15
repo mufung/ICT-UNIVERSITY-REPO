@@ -1,49 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Student Dashboard</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
 <header class="header">
-    <h2>Student Dashboard</h2>
+  <h2>Student Dashboard</h2>
 </header>
 
 <div class="container">
-    <div class="card">
-        <h3>My Results</h3>
-        <p>View and confirm your results.</p>
-    </div>
+  <div class="card">
+    <h3>My Results</h3>
+    <p>View and confirm your results.</p>
+  </div>
 
-    <div class="card">
-        <h3>Report Error</h3>
-        <p>Upload proof and explain issues.</p>
-    </div>
+  <div class="card">
+    <h3>Report Error</h3>
+    <p>Upload proof and explain issues.</p>
+  </div>
 </div>
-
-<script src="js/student.js"></script>
-    
 
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
+/*
+  STUDENT DASHBOARD RULES
+  ----------------------
+  - Must be logged in
+  - Must belong to Students group
+*/
+
 const idToken = localStorage.getItem("idToken");
 
 if (!idToken) {
-  alert("Please log in first");
-  window.location.href = "index.html";
+  window.location.replace("index.html");
 } else {
-  const user = jwt_decode(idToken);
-  const groups = user["cognito:groups"] || [];
+  try {
+    const user = jwt_decode(idToken);
+    const groups = user["cognito:groups"] || [];
 
-  if (!groups.includes("Students")) {
-    alert("Access denied: Students only");
-    window.location.href = "index.html";
+    if (!groups.includes("Students")) {
+      alert("Access denied: Students only");
+      window.location.replace("index.html");
+    }
+  } catch (e) {
+    localStorage.removeItem("idToken");
+    window.location.replace("index.html");
   }
 }
 </script>
- 
-    
+
 </body>
 </html>
