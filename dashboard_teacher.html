@@ -2,11 +2,25 @@
 <html>
 <head>
   <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <h1>📚 Teacher Dashboard</h1>
-  <p>Welcome, Teacher!</p>
 
-  <a href="index.html">Logout</a>
+<header>
+  <h1>Teacher Dashboard</h1>
+</header>
+
+<main>
+  <p>Welcome, Teacher.</p>
+  <button onclick="logout()">Logout</button>
+</main>
+
+<script>
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
+
 </body>
 </html>
