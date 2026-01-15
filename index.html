@@ -59,5 +59,24 @@ if (tokens && tokens.idToken) {
 }
 </script>
 
+    <script>
+function decodeJwt(token) {
+  const payload = token.split('.')[1];
+  const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+  return JSON.parse(decoded);
+}
+
+const idToken = localStorage.getItem("idToken");
+
+if (idToken) {
+  const user = decodeJwt(idToken);
+  console.log("DECODED USER:", user);
+
+  // Example fields
+  console.log("Email:", user.email);
+  console.log("User ID:", user.sub);
+}
+</script>
+
 </body>
 </html>
