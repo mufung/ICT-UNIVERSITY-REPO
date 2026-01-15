@@ -1,57 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Teacher Dashboard</title>
-  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+  <h1>Teacher Dashboard</h1>
+  <p>Welcome, Teacher.</p>
 
-<header class="header">
-  <h2>Teacher Dashboard</h2>
-</header>
+  <button onclick="logout()">Logout</button>
 
-<div class="container">
-  <div class="card">
-    <h3>Upload Results</h3>
-    <p>Upload department results securely.</p>
-  </div>
+  <script>
+    const token = sessionStorage.getItem("idToken");
 
-  <div class="card">
-    <h3>Review Student Requests</h3>
-    <p>View and resolve reported issues.</p>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
-<script>
-/*
-  TEACHER DASHBOARD RULES
-  ----------------------
-  - Must be logged in
-  - Must belong to Teachers group
-*/
-
-const idToken = localStorage.getItem("idToken");
-
-if (!idToken) {
-  window.location.replace("index.html");
-} else {
-  try {
-    const user = jwt_decode(idToken);
-    const groups = user["cognito:groups"] || [];
-
-    if (!groups.includes("Teachers")) {
-      alert("Access denied: Teachers only");
-      window.location.replace("index.html");
+    if (!token) {
+      window.location.href = "index.html";
     }
-  } catch (e) {
-    localStorage.removeItem("idToken");
-    window.location.replace("index.html");
-  }
-}
-</script>
 
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
 </body>
 </html>
