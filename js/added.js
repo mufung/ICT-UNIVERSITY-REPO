@@ -1,6 +1,6 @@
 function signIn() {
   const domain = "us-west-1mwmvk9jtt";
-  const clientId = "2nvt55hgmp4dr3305drocl11dt";
+  const clientId = "2nvt55hgmp4dr3305drocl11d";
   const redirectUri = "https://main.d3enyvo3amjsbz.amplifyapp.com/";
 
   const loginUrl =
