@@ -1,75 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>ICT University | Results Portal</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <title>ICT University | Results Portal</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
 <header class="header">
-    <h1>ICT University </h1>
-    <p>Smart Results Management System</p>
+  <h1>ICT University</h1>
+  <p>Smart Results Management System</p>
 </header>
 
 <div class="container">
-    <div class="card">
-        <h2>Students</h2>
-        <p>View results, report errors, track corrections.</p>
-        <a href="signin.html" class="btn">Student Login</a>
-    </div>
+  <div class="card">
+    <h2>Students</h2>
+    <p>View results, report errors, track corrections.</p>
+    <a href="signin.html" class="btn">Student Login</a>
+  </div>
 
-    <div class="card">
-        <h2>Teachers</h2>
-        <p>Upload results, review student requests.</p>
-        <a href="signin.html" class="btn">Teacher Login</a>
-    </div>
+  <div class="card">
+    <h2>Teachers</h2>
+    <p>Upload results, review student requests.</p>
+    <a href="signin.html" class="btn">Teacher Login</a>
+  </div>
 </div>
 
 <footer>
-    <p>© ICT University | Powered by AWS</p>
+  <p>© ICT University | Powered by AWS</p>
 </footer>
 
-    
-  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+<!-- JWT decode -->
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
-  // 1. Read tokens from URL (after Cognito redirect)
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const idTokenFromUrl = params.get("id_token");
+/*
+  INDEX LOGIC RULES
+  -----------------
+  - Save token if coming from Cognito
+  - DO NOT auto-redirect
+  - Let user choose dashboard via login buttons
+*/
 
-  if (idTokenFromUrl) {
-    localStorage.setItem("idToken", idTokenFromUrl);
+// 1. Save token after Cognito redirect
+const hash = window.location.hash.substring(1);
+const params = new URLSearchParams(hash);
+const idTokenFromUrl = params.get("id_token");
 
-    // Clean URL
-    window.history.replaceState({}, document.title, "/");
-  }
-
-  // 2. Read token from storage
-  const idToken = localStorage.getItem("idToken");
-
-  if (idToken) {
-    const user = jwt_decode(idToken);
-    const groups = user["cognito:groups"] || [];
-
-    console.log("Groups:", groups);
-
-    // 3. Redirect based on role
-    if (groups.includes("Teachers")) {
-      window.location.replace("dashboard_teacher.html");
-    } 
-    else if (groups.includes("Students")) {
-      window.location.replace("dashboard_student.html");
-    } 
-    else {
-      alert("No role assigned. Contact admin.");
-      localStorage.removeItem("idToken");
-    }
-  }
+if (idTokenFromUrl) {
+  localStorage.setItem("idToken", idTokenFromUrl);
+  window.history.replaceState({}, document.title, "/");
+}
 </script>
- 
-  
-    
+
 </body>
 </html>
