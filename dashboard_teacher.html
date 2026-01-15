@@ -25,20 +25,20 @@
 <script src="js/teacher.js"></script>
     
 
- <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
 const idToken = localStorage.getItem("idToken");
 
 if (!idToken) {
-  alert("Please log in first.");
+  alert("Please log in first");
   window.location.href = "index.html";
 } else {
   const user = jwt_decode(idToken);
   const groups = user["cognito:groups"] || [];
 
   if (!groups.includes("Teachers")) {
-    alert("Access denied.");
+    alert("Access denied: Teachers only");
     window.location.href = "index.html";
   }
 }
