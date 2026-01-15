@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>Teacher Dashboard</title>
-  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #eef3f8;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #0f4c81;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>Teacher Dashboard</h1>
-</header>
+<h1>Teacher Dashboard</h1>
+<p>Welcome, Teacher.</p>
 
-<main>
-  <p>Welcome, Teacher.</p>
-  <button onclick="logout()">Logout</button>
-</main>
+<button onclick="logout()">Logout</button>
 
 <script>
   function logout() {
