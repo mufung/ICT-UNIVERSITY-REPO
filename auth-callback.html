@@ -1,62 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Authenticating...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f2027;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+  </style>
 </head>
 
 <body>
-  <h3>Signing you in...</h3>
 
-<script>
-(async () => {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
+  <h2>Signing you in…</h2>
 
-  if (!code) {
-    alert("No authorization code received.");
-    return;
-  }
+  <script>
+    function getHashParams() {
+      const hash = window.location.hash.substring(1);
+      const params = {};
+      hash.split("&").forEach(item => {
+        const parts = item.split("=");
+        params[parts[0]] = decodeURIComponent(parts[1]);
+      });
+      return params;
+    }
 
-  const tokenUrl = "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/oauth2/token";
+    const params = getHashParams();
+    const idToken = params.id_token;
 
-  const body = new URLSearchParams({
-    grant_type: "authorization_code",
-    client_id: "7ugvqkg6l7859oto4v5vcjqjus",
-    redirect_uri: "https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html",
-    code: code
-  });
+    if (!idToken) {
+      alert("Authentication failed. No token received.");
+      window.location.href = "index.html";
+    }
 
-  const response = await fetch(tokenUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: body.toString()
-  });
+    const decoded = jwt_decode(idToken);
+    const groups = decoded["cognito:groups"] || [];
 
-  const data = await response.json();
+    localStorage.setItem("idToken", idToken);
 
-  if (!data.id_token) {
-    alert("Authentication failed");
-    return;
-  }
-
-  const user = jwt_decode(data.id_token);
-  const groups = user["cognito:groups"] || [];
-
-  if (groups.includes("Teachers")) {
-    window.location.href = "teacher-dashboard.html";
-  } else if (groups.includes("Students")) {
-    window.location.href = "student-dashboard.html";
-  } else {
-    alert("No role assigned. Contact admin.");
-  }
-})();
-</script>
+    if (groups.includes("Teachers")) {
+      window.location.href = "teacher-dashboard.html";
+    } 
+    else if (groups.includes("Students")) {
+      window.location.href = "student-dashboard.html";
+    } 
+    else {
+      alert("No role assigned. Contact administrator.");
+      window.location.href = "index.html";
+    }
+  </script>
 
 </body>
 </html>
