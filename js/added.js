@@ -1,6 +1,6 @@
 function signIn() {
-  const domain = "YOUR_COGNITO_DOMAIN";
-  const clientId = "YOUR_NEW_CLIENT_ID";
+  const domain = "https://us-west-1zcpgrdab1.auth.us-west-1.amazoncognito.com";
+  const clientId = "3537i7gssuj7dotmphqdkbu434";
   const redirectUri = "https://main.d3enyvo3amjsbz.amplifyapp.com/";
 
   const loginUrl =
