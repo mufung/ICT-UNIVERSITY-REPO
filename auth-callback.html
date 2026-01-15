@@ -49,12 +49,10 @@
   const groups = user["cognito:groups"] || [];
 
   if (groups.includes("Teachers")) {
-  window.location.href = "/teacher-dashboard/";
-} else if (groups.includes("Students")) {
-  window.location.href = "/student-dashboard/";
-} else {
-  alert("No role assigned. Contact admin.");
-} else {
+    window.location.href = "teacher-dashboard.html";
+  } else if (groups.includes("Students")) {
+    window.location.href = "student-dashboard.html";
+  } else {
     alert("No role assigned. Contact admin.");
   }
 })();
