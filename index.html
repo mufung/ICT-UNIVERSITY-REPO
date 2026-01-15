@@ -1,34 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>ICT University | Results Portal</title>
-    <link rel="stylesheet" href="css/main.css">
+  <title>University App</title>
 </head>
 <body>
+  <h1>Welcome</h1>
 
-<header class="header">
-    <h1>ICT University</h1>
-    <p>Smart Results Management System</p>
-</header>
+  <button onclick="login()">Login</button>
 
-<div class="container">
-    <div class="card">
-        <h2>Students</h2>
-        <p>View results, report errors, track corrections.</p>
-        <a href="signin.html" class="btn">Student Login</a>
-    </div>
-
-    <div class="card">
-        <h2>Teachers</h2>
-        <p>Upload results, review student requests.</p>
-        <a href="signin.html" class="btn">Teacher Login</a>
-    </div>
-</div>
-
-<footer>
-    <p>© ICT University | Powered by AWS</p>
-</footer>
-
+  <script>
+    function login() {
+      window.location.href =
+        "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/login" +
+        "?client_id=7ugvqkg6l7859oto4v5vcjqjus" +
+        "&response_type=token" +
+        "&scope=openid+email+profile" +
+        "&redirect_uri=https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
+    }
+  </script>
 </body>
 </html>
