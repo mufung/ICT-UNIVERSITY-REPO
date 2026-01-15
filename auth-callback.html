@@ -1,37 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Signing you in...</title>
+  <meta charset="UTF-8">
+  <title>Authenticating...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 </head>
 
 <body>
-  <p>Authenticating...</p>
+  <h3>Signing you in...</h3>
 
 <script>
-const hash = window.location.hash.substring(1);
-const params = new URLSearchParams(hash);
-const idToken = params.get("id_token");
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
 
-if (!idToken) {
-  window.location.href = "signin.html";
-}
+  if (!code) {
+    alert("No authorization code received.");
+    return;
+  }
 
-sessionStorage.setItem("idToken", idToken);
+  const tokenUrl = "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/oauth2/token";
 
-const decoded = jwt_decode(idToken);
-const groups = decoded["cognito:groups"] || [];
+  const body = new URLSearchParams({
+    grant_type: "authorization_code",
+    client_id: "7ugvqkg6l7859oto4v5vcjqjus",
+    redirect_uri: "https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html",
+    code: code
+  });
 
-if (groups.includes("Students")) {
-  window.location.href = "dashboard_student.html";
-}
-else if (groups.includes("Teachers")) {
-  window.location.href = "dashboard_teacher.html";
-}
-else {
-  alert("No role assigned. Contact admin.");
-  window.location.href = "signin.html";
-}
+  const response = await fetch(tokenUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: body.toString()
+  });
+
+  const data = await response.json();
+
+  if (!data.id_token) {
+    alert("Authentication failed");
+    return;
+  }
+
+  const user = jwt_decode(data.id_token);
+  const groups = user["cognito:groups"] || [];
+
+  if (groups.includes("Teachers")) {
+    window.location.href = "teacher-dashboard.html";
+  } else if (groups.includes("Students")) {
+    window.location.href = "student-dashboard.html";
+  } else {
+    alert("No role assigned. Contact admin.");
+  }
+})();
 </script>
 
 </body>
