@@ -8,7 +8,7 @@
   <style>
     body {
       margin: 0;
-      font-family: Inter, system-ui, sans-serif;
+      font-family: "Inter", system-ui, sans-serif;
       background: #f7f9fc;
       color: #0a2540;
     }
@@ -38,9 +38,18 @@
       box-shadow: 0 15px 35px rgba(0,0,0,0.08);
     }
 
+    h2 {
+      margin-top: 0;
+    }
+
+    .result {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
     button {
-      margin-top: 30px;
-      padding: 12px 26px;
+      margin-top: 20px;
+      padding: 12px 22px;
       border-radius: 999px;
       border: none;
       background: #dc2626;
@@ -51,39 +60,69 @@
 </head>
 
 <body>
+
 <header>
   <h1>Student Dashboard</h1>
-  <p>View results & academic status</p>
+  <p>View results, performance insights & academic status</p>
 </header>
 
 <main>
+
   <div class="grid">
+
+    <!-- RESULTS -->
     <div class="card">
       <h2>Your Results</h2>
-      <p>CSC301 – A</p>
-      <p>MTH201 – B+</p>
-      <p>CSC305 – Pending</p>
+      <div class="result">CSC301 – Data Structures: <strong>A</strong></div>
+      <div class="result">MTH201 – Linear Algebra: <strong>B+</strong></div>
+      <div class="result">CSC305 – Operating Systems: <strong>Pending</strong></div>
     </div>
 
+    <!-- GPA & AI -->
     <div class="card">
       <h2>Academic Analytics</h2>
-      <p>🎓 GPA: 3.62</p>
-      <p>📈 Progress: Improving</p>
+      <p>🎓 GPA: <strong>3.62</strong></p>
+      <p>📈 Progress Trend: <strong>Improving</strong></p>
+      <p>⚠️ Risk Status: <strong>Low</strong></p>
+      <small>(AI insights placeholder)</small>
     </div>
+
+    <!-- REQUESTS -->
+    <div class="card">
+      <h2>Result Actions</h2>
+      <p>✔ Request result review</p>
+      <p>✔ Download transcripts</p>
+      <p>✔ Track approval status</p>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="card">
+      <h2>Department Notices</h2>
+      <p>📢 Mid-semester exams begin next week</p>
+      <p>📢 Result portal closes Friday</p>
+    </div>
+
   </div>
 
   <button onclick="logout()">Logout</button>
+
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
 <script>
-  if (!localStorage.getItem("idToken")) {
-    window.location.href = "index.html";
-  }
+  const token = localStorage.getItem("idToken");
+  if (!token) window.location.href = "index.html";
+
+  const user = jwt_decode(token);
+  const groups = user["cognito:groups"] || [];
+  if (!groups.includes("Students")) window.location.href = "index.html";
 
   function logout() {
-    localStorage.clear();
+    localStorage.removeItem("idToken");
     window.location.href = "index.html";
   }
 </script>
+
 </body>
 </html>
