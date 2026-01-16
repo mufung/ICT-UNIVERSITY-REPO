@@ -1,173 +1,28 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>School Result System – Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      margin: 0;
-      font-family: "Inter", system-ui, sans-serif;
-      background: #f4f7fb;
-      color: #0a2540;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 50px 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      text-align: center;
-      opacity: 0.7;
-      margin-bottom: 40px;
-    }
-
-    .roles {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin-bottom: 40px;
-    }
-
-    .role-card {
-      background: white;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      border: 2px solid transparent;
-    }
-
-    .role-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 45px rgba(0,0,0,0.12);
-    }
-
-    .role-card.active {
-      border-color: #2563eb;
-    }
-
-    .login-box {
-      max-width: 420px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-    }
-
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      border-radius: 999px;
-      border: none;
-      background: #2563eb;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .error {
-      color: #dc2626;
-      margin-top: 12px;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    .notes {
-      margin-top: 50px;
-      font-size: 14px;
-      opacity: 0.75;
-      line-height: 1.6;
-      text-align: center;
-    }
-  </style>
+  <title>Select Role</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-
 <body>
 
 <div class="container">
+  <div class="card">
+    <h1>University Portal</h1>
+    <p>Select your role to continue</p>
 
-  <h1>School Result Management System</h1>
-  <p class="subtitle">
-    A secure platform for teachers to manage results and for students to review,
-    request corrections, and track academic performance.
-  </p>
+    <button class="student" onclick="login('Students')">
+      🎓 Student Login
+    </button>
 
-  <!-- ROLE SELECTION -->
-  <div class="roles">
-    <div class="role-card" onclick="selectRole('teacher')" id="teacherCard">
-      <h2>👩‍🏫 Teacher</h2>
-      <p>Upload results, validate grades, respond to student complaints, and analyze performance.</p>
-    </div>
-
-    <div class="role-card" onclick="selectRole('student')" id="studentCard">
-      <h2>🎓 Student</h2>
-      <p>View results, request corrections, track approvals, and monitor academic progress.</p>
-    </div>
+    <button class="teacher" onclick="login('Teachers')">
+      👩‍🏫 Teacher Login
+    </button>
   </div>
-
-  <!-- LOGIN FORM -->
-  <div class="login-box">
-    <form id="loginForm">
-      <label>Email</label>
-      <input type="email" id="email" required />
-
-      <label>Password</label>
-      <input type="password" id="password" required />
-
-      <button type="submit">Sign In</button>
-    </form>
-
-    <div id="error" class="error"></div>
-  </div>
-
-  <div class="notes">
-    🔐 This system is designed to reduce result errors, improve transparency,
-    and allow smooth interaction between teachers and students in real time.
-  </div>
-
 </div>
 
-<script src="auth.js"></script>
-
-<script>
-  function selectRole(role) {
-    localStorage.setItem("loginRole", role);
-
-    document.getElementById("teacherCard").classList.remove("active");
-    document.getElementById("studentCard").classList.remove("active");
-
-    if (role === "teacher") {
-      document.getElementById("teacherCard").classList.add("active");
-    } else {
-      document.getElementById("studentCard").classList.add("active");
-    }
-  }
-</script>
-
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
 </body>
 </html>
