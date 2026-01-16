@@ -1,57 +1,58 @@
  <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Student Dashboard</title>
-
+  <meta charset="UTF-8" />
+  <title>School Portal</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f5f4f1;
-      color: #020617;
-    }
-    header {
-      padding: 40px;
-      background: #020617;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(120deg, #0f172a, #020617);
       color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    section {
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
+    .container {
+      display: flex;
+      gap: 40px;
     }
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      margin-bottom: 16px;
+      width: 260px;
+      padding: 40px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      background: rgba(255,255,255,0.15);
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    p {
+      opacity: 0.8;
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <h1>Student Dashboard</h1>
-</header>
+  <div class="container">
+    <div class="card" id="studentLogin">
+      <h2>Student</h2>
+      <p>View results, feedback, corrections</p>
+    </div>
 
-<section>
-  <div class="card">
-    <strong>CSC301</strong><br>
-    Status: Pending
+    <div class="card" id="teacherLogin">
+      <h2>Teacher</h2>
+      <p>Correct work, manage students</p>
+    </div>
   </div>
-  <div class="card">
-    <strong>MTH201</strong><br>
-    Status: Uploaded
-  </div>
-</section>
 
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-<script>
-  const token = localStorage.getItem("idToken");
-  if (!token) location.href = "signin.html";
-</script>
-
+  <script src="auth.js"></script>
 </body>
 </html>
