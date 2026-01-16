@@ -3,6 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Teacher Dashboard</title>
+
+  <!-- ✅ LOAD AWS AMPLIFY (THIS IS WHAT YOU WERE MISSING) -->
+  <script src="https://unpkg.com/aws-amplify@5.3.6/dist/aws-amplify.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
@@ -12,11 +30,18 @@
 <br><br>
 <button id="submitBtn">Submit Results</button>
 
-<p id="status"></p>
-
-<script src="https://unpkg.com/aws-amplify@5.3.6/dist/aws-amplify.min.js"></script>
+<div id="status"></div>
 
 <script>
+  // ✅ CONFIGURE AMPLIFY (REQUIRED)
+  Amplify.configure({
+    Auth: {
+      region: "us-west-1",
+      userPoolId: "us-west-1_mbnfq4DcV",
+      userPoolWebClientId: "7ugvqkgf7859oto4v5vgdjus"
+    }
+  });
+
   const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
 
   document.getElementById("submitBtn").addEventListener("click", async () => {
@@ -24,19 +49,24 @@
     const fileInput = document.getElementById("fileInput");
 
     if (!fileInput.files.length) {
-      status.innerText = "No file selected";
+      status.innerText = "Please select a file ❌";
       return;
     }
 
     try {
+      // ✅ GET COGNITO TOKEN
       const session = await Amplify.Auth.currentSession();
       const idToken = session.getIdToken().getJwtToken();
 
+      // ✅ READ FILE
       const file = fileInput.files[0];
       const text = await file.text();
       const jsonData = JSON.parse(text);
 
-      const res = await fetch(API_URL, {
+      status.innerText = "Uploading...";
+
+      // ✅ SEND TO API GATEWAY
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,15 +75,17 @@
         body: JSON.stringify(jsonData)
       });
 
-      const result = await res.json();
+      const result = await response.json();
 
-      if (!res.ok) throw new Error(result.message);
+      if (!response.ok) {
+        throw new Error(result.message || "Upload failed");
+      }
 
       status.innerText = "Upload successful ✅";
 
     } catch (err) {
       console.error(err);
-      status.innerText = "Upload failed ❌";
+      status.innerText = "Upload failed ❌ (check console)";
     }
   });
 </script>
