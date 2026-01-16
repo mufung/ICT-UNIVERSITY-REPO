@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,13 +8,13 @@
   <style>
     body {
       margin: 0;
-      font-family: "Inter", system-ui, sans-serif;
-      background: #0a2540;
+      font-family: Inter, system-ui, sans-serif;
+      background: linear-gradient(135deg, #0a2540, #020617);
       color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .container {
@@ -25,11 +25,12 @@
     }
 
     h1 {
+      font-size: 36px;
       margin-bottom: 10px;
     }
 
     p {
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     .roles {
@@ -40,25 +41,27 @@
     }
 
     .card {
-      background: #112d4e;
+      background: #0f2a44;
       padding: 30px;
-      border-radius: 18px;
+      border-radius: 20px;
       cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
+      transition: all 0.25s ease;
+      border: 2px solid transparent;
     }
 
     .card:hover {
       transform: translateY(-6px);
-      background: #163a63;
+      border-color: #14b8a6;
     }
 
-    .card h2 {
-      margin-top: 0;
+    .card.selected {
+      border-color: #14b8a6;
+      background: #123b5f;
     }
 
     button {
-      margin-top: 30px;
-      padding: 14px 28px;
+      margin-top: 40px;
+      padding: 14px 36px;
       border-radius: 999px;
       border: none;
       background: #14b8a6;
@@ -71,23 +74,19 @@
 </head>
 
 <body>
-
 <div class="container">
   <h1>Academic Result Correction System</h1>
-  <p>
-    A secure platform for students to review academic results and  
-    for teachers to upload, validate, and correct errors efficiently.
-  </p>
+  <p>Select your role to continue</p>
 
   <div class="roles">
-    <div class="card" onclick="selectRole('student')">
+    <div class="card" id="student" onclick="selectRole('student')">
       <h2>Student</h2>
-      <p>View results, request corrections, track approval status</p>
+      <p>View results, request corrections, track progress</p>
     </div>
 
-    <div class="card" onclick="selectRole('teacher')">
+    <div class="card" id="teacher" onclick="selectRole('teacher')">
       <h2>Teacher</h2>
-      <p>Upload results, validate scores, resolve student complaints</p>
+      <p>Upload results, review requests, approve changes</p>
     </div>
   </div>
 
@@ -95,24 +94,24 @@
 </div>
 
 <script>
-  let selectedRole = null;
-
   function selectRole(role) {
-    selectedRole = role;
     localStorage.setItem("selectedRole", role);
+
+    document.getElementById("student").classList.remove("selected");
+    document.getElementById("teacher").classList.remove("selected");
+
+    document.getElementById(role).classList.add("selected");
     document.getElementById("loginBtn").style.display = "inline-block";
   }
 
   function login() {
-    // 🔹 Replace with your Cognito Hosted UI URL (already provided by you earlier)
     window.location.href =
-      "https://YOUR_DOMAIN.auth.YOUR_REGION.amazoncognito.com/login" +
-      "?client_id=YOUR_CLIENT_ID" +
+      "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/login" +
+      "?client_id=7ugvqkg6l7859oto4v5vqjqius" +
       "&response_type=token" +
       "&scope=openid+email+profile" +
-      "&redirect_uri=YOUR_REDIRECT_URL";
+      "&redirect_uri=http://localhost:5500/auth-callback.html";
   }
 </script>
-
 </body>
 </html>
