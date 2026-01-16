@@ -2,11 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ICT University — Academic Intelligence Platform</title>
+  <title>ICT University Academic System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- KEEP EXISTING AUTH / REDIRECT SCRIPTS IF ANY -->
-  <!-- ADDITIVE STYLING ONLY -->
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
@@ -14,132 +11,65 @@
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #f5f4f1;
-      color: #0a2540;
-      line-height: 1.6;
-    }
-
-    section {
-      padding: 100px 8%;
-    }
-
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      background: linear-gradient(120deg, #0a2540, #0e3b64);
+      background: linear-gradient(180deg, #0a2540, #020617);
       color: white;
     }
-
-    .hero h1 {
-      font-size: clamp(3rem, 6vw, 5rem);
-      font-weight: 800;
-      max-width: 900px;
+    header {
+      padding: 80px 10%;
     }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-top: 30px;
+    h1 {
+      font-size: 64px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    p {
       max-width: 600px;
+      font-size: 18px;
       opacity: 0.9;
     }
-
     .cta {
-      margin-top: 50px;
+      margin-top: 40px;
     }
-
     .cta a {
-      text-decoration: none;
+      display: inline-block;
       margin-right: 20px;
       padding: 14px 32px;
-      border-radius: 999px;
+      border-radius: 40px;
+      text-decoration: none;
       font-weight: 600;
-      background: white;
-      color: #0a2540;
-    }
-
-    .manifesto {
-      background: white;
-    }
-
-    .quote {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 600;
-      max-width: 900px;
-    }
-
-    .quote span {
-      display: block;
-      margin-top: 20px;
-      font-size: 1rem;
-      opacity: 0.6;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
-      gap: 40px;
-      margin-top: 60px;
-    }
-
-    .card {
-      padding: 30px;
-      border-radius: 20px;
-      background: #ffffff;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-    }
-
-    footer {
-      padding: 40px 8%;
-      background: #0a2540;
       color: white;
-      font-size: 0.9rem;
+    }
+    .signin {
+      background: #2563eb;
+    }
+    .register {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    section {
+      padding: 120px 10%;
+      background: #f5f4f1;
+      color: #020617;
     }
   </style>
 </head>
 
 <body>
 
-<section class="hero">
-  <div>
-    <h1>Education is not data.  
-    It’s direction.</h1>
-    <p>
-      ICT University’s Academic Intelligence Platform brings clarity, trust, and intelligence to academic results.
-    </p>
-    <div class="cta">
-      <a href="login.html">Login</a>
-      <a href="register.html">Register</a>
-    </div>
+<header>
+  <h1>ICT University Academic Portal</h1>
+  <p>A modern, secure academic platform for students and lecturers — built for the future of education.</p>
+
+  <div class="cta">
+    <a class="signin" href="signin.html">Sign In</a>
+    <a class="register" href="register.html">Register</a>
   </div>
+</header>
+
+<section>
+  <h2>Why This Platform?</h2>
+  <p>Results management, secure authentication, department-based access, and scalable cloud infrastructure.</p>
 </section>
-
-<section class="manifesto">
-  <div class="quote">
-    “Grades are not numbers.  
-    They are decisions that shape futures.”
-    <span>— Academic Integrity Manifesto</span>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Teacher Intelligence</h3>
-      <p>Upload, analyze, validate, and approve results with AI-assisted confidence.</p>
-    </div>
-    <div class="card">
-      <h3>Student Transparency</h3>
-      <p>Track performance, predict outcomes, and appeal responsibly.</p>
-    </div>
-    <div class="card">
-      <h3>Institutional Trust</h3>
-      <p>Blockchain-ready, FERPA-aligned, audit-safe academic workflows.</p>
-    </div>
-  </div>
-</section>
-
-<footer>
-  ICT University © 2026 — Powered by AWS
-</footer>
 
 </body>
 </html>
