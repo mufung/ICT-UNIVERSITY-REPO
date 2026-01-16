@@ -1,194 +1,64 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Teacher Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>Teacher Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Inter", system-ui, sans-serif;
-      background: #f4f7fb;
-      color: #0a2540;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-    header {
-      background: linear-gradient(135deg, #0a2540, #0d3b66);
-      color: white;
-      padding: 40px;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #f5f4f1;
+  color: #0a2540;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
+header {
+  padding: 80px 8%;
+  background: linear-gradient(120deg, #0a2540, #0e3b64);
+  color: white;
+}
 
-    header p {
-      opacity: 0.85;
-    }
+section {
+  padding: 80px 8%;
+}
 
-    main {
-      padding: 40px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-    }
-
-    h2 {
-      margin-top: 0;
-      font-size: 20px;
-    }
-
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 14px;
-    }
-
-    button {
-      padding: 12px 22px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .primary {
-      background: #2563eb;
-      color: white;
-    }
-
-    .danger {
-      background: #dc2626;
-      color: white;
-    }
-
-    .status {
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    .footer {
-      margin-top: 60px;
-      text-align: center;
-    }
-  </style>
+.card {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  margin-bottom: 40px;
+}
+</style>
 </head>
 
 <body>
 
 <header>
   <h1>Teacher Dashboard</h1>
-  <p>Manage results, courses, departments & analytics</p>
+  <p>Academic authority. Intelligent decisions.</p>
 </header>
 
-<main>
-
-  <div class="grid">
-
-    <!-- RESULT UPLOAD -->
-    <div class="card">
-      <h2>Upload Student Results</h2>
-
-      <label>Department</label>
-      <select id="department">
-        <option>Computer Science</option>
-        <option>Engineering</option>
-        <option>Business</option>
-      </select>
-
-      <label>Course Code</label>
-      <input type="text" id="course" placeholder="CSC301" />
-
-      <label>Level</label>
-      <select id="level">
-        <option>100</option>
-        <option>200</option>
-        <option>300</option>
-        <option>400</option>
-      </select>
-
-      <label>Upload File</label>
-      <input type="file" />
-
-      <button class="primary" onclick="uploadResults()">Submit Results</button>
-      <div id="uploadStatus" class="status"></div>
-    </div>
-
-    <!-- AI ANALYTICS -->
-    <div class="card">
-      <h2>AI Performance Analytics</h2>
-      <p>📊 Pass Rate Prediction: <strong>78%</strong></p>
-      <p>⚠️ Students At Risk: <strong>12</strong></p>
-      <p>📈 Course Difficulty Index: <strong>Medium</strong></p>
-      <small>(AI insights – Lambda integration later)</small>
-    </div>
-
-    <!-- COURSE MANAGEMENT -->
-    <div class="card">
-      <h2>Course Management</h2>
-      <p>✔ Assign lecturers</p>
-      <p>✔ Validate uploaded results</p>
-      <p>✔ Lock / unlock result visibility</p>
-    </div>
-
-    <!-- COMMUNICATION -->
-    <div class="card">
-      <h2>Student Communication</h2>
-      <p>📢 Send announcements</p>
-      <p>💬 Respond to result complaints</p>
-      <p>📧 Notify students of updates</p>
-    </div>
-
+<section>
+  <div class="card">
+    <h2>Upload Results</h2>
+    <input type="file">
+    <p>Files are securely processed via AWS Lambda.</p>
   </div>
 
-  <div class="footer">
-    <button class="danger" onclick="logout()">Logout</button>
+  <div class="card">
+    <h2>AI Insights</h2>
+    <p>Detect anomalies, performance trends, and at-risk students.</p>
   </div>
 
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
-<script>
-  const token = localStorage.getItem("idToken");
-  if (!token) window.location.href = "index.html";
-
-  const user = jwt_decode(token);
-  const groups = user["cognito:groups"] || [];
-  if (!groups.includes("Teachers")) window.location.href = "index.html";
-
-  function uploadResults() {
-    document.getElementById("uploadStatus").textContent =
-      "Results uploaded successfully (ready for Lambda processing).";
-  }
-
-  function logout() {
-    localStorage.removeItem("idToken");
-    window.location.href = "index.html";
-  }
-</script>
+  <div class="card">
+    <h2>Approval Workflow</h2>
+    <p>Department → Dean → Registrar validation chain.</p>
+  </div>
+</section>
 
 </body>
 </html>
