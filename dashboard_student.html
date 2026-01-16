@@ -1,102 +1,127 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Student Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Student Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  margin: 0;
-  font-family: Inter, Arial, sans-serif;
-  background: #f5f6f8;
-  color: #0a2540;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: #f7f9fc;
+      color: #0a2540;
+    }
 
-header {
-  background: #0a2540;
-  color: white;
-  padding: 30px;
-}
+    header {
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      color: white;
+      padding: 40px;
+    }
 
-main {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 20px;
-}
+    main {
+      padding: 40px;
+      max-width: 1100px;
+      margin: auto;
+    }
 
-.section {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
 
-.result {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-}
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
 
-button {
-  margin-top: 16px;
-  padding: 10px 20px;
-  border-radius: 22px;
-  border: none;
-  background: #0a2540;
-  color: white;
-  cursor: pointer;
-}
+    h2 {
+      margin-top: 0;
+    }
 
-textarea {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 8px;
-}
-</style>
+    .result {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      border: none;
+      background: #dc2626;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
   <h1>Student Dashboard</h1>
-  <p>View academic results and submit appeals</p>
+  <p>View results, performance insights & academic status</p>
 </header>
 
 <main>
 
-<!-- RESULTS -->
-<section class="section">
-  <h2>My Results</h2>
+  <div class="grid">
 
-  <div class="result">
-    CSC301 — <strong>Pending</strong>
+    <!-- RESULTS -->
+    <div class="card">
+      <h2>Your Results</h2>
+      <div class="result">CSC301 – Data Structures: <strong>A</strong></div>
+      <div class="result">MTH201 – Linear Algebra: <strong>B+</strong></div>
+      <div class="result">CSC305 – Operating Systems: <strong>Pending</strong></div>
+    </div>
+
+    <!-- GPA & AI -->
+    <div class="card">
+      <h2>Academic Analytics</h2>
+      <p>🎓 GPA: <strong>3.62</strong></p>
+      <p>📈 Progress Trend: <strong>Improving</strong></p>
+      <p>⚠️ Risk Status: <strong>Low</strong></p>
+      <small>(AI insights placeholder)</small>
+    </div>
+
+    <!-- REQUESTS -->
+    <div class="card">
+      <h2>Result Actions</h2>
+      <p>✔ Request result review</p>
+      <p>✔ Download transcripts</p>
+      <p>✔ Track approval status</p>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="card">
+      <h2>Department Notices</h2>
+      <p>📢 Mid-semester exams begin next week</p>
+      <p>📢 Result portal closes Friday</p>
+    </div>
+
   </div>
 
-  <div class="result">
-    MTH201 — <strong>B+</strong>
-  </div>
-</section>
-
-<!-- APPEAL -->
-<section class="section">
-  <h2>Submit Result Appeal</h2>
-
-  <textarea id="appealText" rows="4" placeholder="Explain your appeal..."></textarea>
-  <button onclick="submitAppeal()">Submit Appeal</button>
-
-  <p id="appealStatus"></p>
-</section>
+  <button onclick="logout()">Logout</button>
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
 <script>
-function submitAppeal() {
-  const status = document.getElementById("appealStatus");
-  status.textContent = "Appeal submitted successfully.";
-  status.style.color = "green";
-}
+  const token = localStorage.getItem("idToken");
+  if (!token) window.location.href = "index.html";
+
+  const user = jwt_decode(token);
+  const groups = user["cognito:groups"] || [];
+  if (!groups.includes("Students")) window.location.href = "index.html";
+
+  function logout() {
+    localStorage.removeItem("idToken");
+    window.location.href = "index.html";
+  }
 </script>
 
 </body>
