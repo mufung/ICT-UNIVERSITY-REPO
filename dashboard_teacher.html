@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Teacher Dashboard</title>
+
+  <!-- AWS Amplify -->
+  <script src="https://unpkg.com/aws-amplify@5.3.18/dist/aws-amplify.min.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 40px;
+      background: #f5f5f5;
     }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
     button {
       padding: 10px 20px;
       font-size: 16px;
+      cursor: pointer;
     }
+
     #status {
       margin-top: 20px;
       font-weight: bold;
@@ -23,52 +35,63 @@
 <h1>Teacher Dashboard</h1>
 
 <input type="file" id="fileInput" accept=".json" />
-<br><br>
+<br /><br />
 <button id="submitBtn">Submit Results</button>
 
 <div id="status"></div>
 
 <script>
-  const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
+  // =========================
+  // AMPLIFY CONFIG (YOUR REAL VALUES)
+  // =========================
+  const { Amplify, Auth } = aws_amplify;
 
-  function getAccessToken() {
-    for (let key in localStorage) {
-      if (key.includes("accessToken")) {
-        return localStorage.getItem(key);
-      }
+  Amplify.configure({
+    Auth: {
+      region: "us-west-1",
+      userPoolId: "us-west-1_mbnfq4DcV",
+      userPoolWebClientId: "7ugqkgf7859oto4v5vqjdius"
     }
-    return null;
-  }
+  });
 
+  // =========================
+  // API GATEWAY URL (MUST INCLUDE RESOURCE)
+  // =========================
+  const API_URL =
+    "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod/results";
+
+  // =========================
+  // SUBMIT BUTTON LOGIC
+  // =========================
   document.getElementById("submitBtn").addEventListener("click", async () => {
     const status = document.getElementById("status");
     const fileInput = document.getElementById("fileInput");
 
     if (!fileInput.files.length) {
-      status.innerText = "Please select a file";
+      status.innerText = "Please select a JSON file";
       return;
     }
-
-    const token = getAccessToken();
-    if (!token) {
-      status.innerText = "Authentication error. Please sign in again.";
-      return;
-    }
-
-    const file = fileInput.files[0];
-    const text = await file.text();
-    const jsonData = JSON.parse(text);
 
     status.innerText = "Uploading...";
 
     try {
+      // 1. Get authenticated session
+      const session = await Auth.currentSession();
+      const idToken = session.getIdToken().getJwtToken();
+
+      // 2. Read JSON file
+      const file = fileInput.files[0];
+      const text = await file.text();
+      const data = JSON.parse(text);
+
+      // 3. Send to API Gateway
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token
+          "Authorization": `Bearer ${idToken}`
         },
-        body: JSON.stringify(jsonData)
+        body: JSON.stringify(data)
       });
 
       const result = await response.json();
@@ -79,8 +102,8 @@
 
       status.innerText = "Upload successful ✅";
 
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("UPLOAD ERROR:", error);
       status.innerText = "Upload failed ❌ (Check console)";
     }
   });
