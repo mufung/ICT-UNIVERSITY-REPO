@@ -1,78 +1,53 @@
-(function () {
-  'use strict';
+import { Auth } from "https://cdn.jsdelivr.net/npm/aws-amplify@5.3.8/dist/aws-amplify.min.js";
+import awsconfig from "./config.js";
 
-  const token = localStorage.getItem('idToken');
-  if (!token) {
-    window.location.href = 'signin.html';
-    return;
-  }
+const API_URL = awsconfig.apiEndpoint;
 
-  document.getElementById('logoutBtn')?.addEventListener('click', () => {
-    localStorage.clear();
-    window.location.href = 'signin.html';
-  });
+// Make sure Amplify is configured
+import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@5.3.8/dist/aws-amplify.min.js";
+Amplify.configure(awsconfig);
 
-  console.log('Teacher dashboard loaded');
-})();
+// Handle form submission
+document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-// ===============================
-// FILE UPLOAD → API → LAMBDA
-// ===============================
-
-async function submitResults() {
-  const fileInput = document.getElementById("fileInput");
-  const file = fileInput.files[0];
-
-  if (!file) {
-    alert("Please choose a JSON file.");
-    return;
-  }
+  const status = document.getElementById("status");
+  status.innerText = "Uploading...";
 
   try {
-    // 1️⃣ Read file
-    const text = await file.text();
+    // 🔐 GET REAL COGNITO TOKEN
+    const session = await Auth.currentSession();
+    const idToken = session.getIdToken().getJwtToken();
 
-    // 2️⃣ Parse JSON
-    const data = JSON.parse(text);
+    // 📦 COLLECT FORM DATA
+    const data = {
+      studentId: document.getElementById("studentId").value,
+      courseCode: document.getElementById("courseCode").value,
+      academicYear: document.getElementById("academicYear").value,
+      department: document.getElementById("department").value,
+      results: document.getElementById("results").value
+    };
 
-    // 3️⃣ Send to API
-    await uploadResults(data);
-
-  } catch (err) {
-    console.error("Invalid JSON file:", err);
-    alert("Invalid JSON file.");
-  }
-}
-
-async function uploadResults(data) {
-  const token = localStorage.getItem("idToken");
-
-  try {
-    const response = await fetch(
-      "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod/results",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
-        },
-        body: JSON.stringify(data)
-      }
-    );
+    // 🚀 SEND TO API GATEWAY
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${idToken}`
+      },
+      body: JSON.stringify(data)
+    });
 
     const result = await response.json();
 
     if (!response.ok) {
-      console.error("Lambda error:", result);
-      alert(result.message || "Upload failed");
-      return;
+      throw new Error(result.message || "Upload failed");
     }
 
-    console.log("Upload success:", result);
-    alert("Results uploaded and saved to database!");
+    status.innerText = "✅ Upload successful";
 
   } catch (error) {
-    console.error("Network error:", error);
-    alert("Network error.");
+    console.error("UPLOAD ERROR:", error);
+    status.innerText = "❌ Upload failed (check console)";
   }
-}
+});
