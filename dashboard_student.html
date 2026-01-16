@@ -1,128 +1,63 @@
  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Student Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Inter", system-ui, sans-serif;
-      background: #f7f9fc;
-      color: #0a2540;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-    header {
-      background: linear-gradient(135deg, #0d9488, #14b8a6);
-      color: white;
-      padding: 40px;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #f5f4f1;
+  color: #0a2540;
+}
 
-    main {
-      padding: 40px;
-      max-width: 1100px;
-      margin: auto;
-    }
+header {
+  padding: 80px 8%;
+  background: linear-gradient(120deg, #0a2540, #0e3b64);
+  color: white;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
+section {
+  padding: 80px 8%;
+}
 
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-    }
-
-    h2 {
-      margin-top: 0;
-    }
-
-    .result {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 12px 22px;
-      border-radius: 999px;
-      border: none;
-      background: #dc2626;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
+.card {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  margin-bottom: 40px;
+}
+</style>
 </head>
 
 <body>
 
 <header>
   <h1>Student Dashboard</h1>
-  <p>View results, performance insights & academic status</p>
+  <p>Your academic journey — transparent and intelligent.</p>
 </header>
 
-<main>
-
-  <div class="grid">
-
-    <!-- RESULTS -->
-    <div class="card">
-      <h2>Your Results</h2>
-      <div class="result">CSC301 – Data Structures: <strong>A</strong></div>
-      <div class="result">MTH201 – Linear Algebra: <strong>B+</strong></div>
-      <div class="result">CSC305 – Operating Systems: <strong>Pending</strong></div>
-    </div>
-
-    <!-- GPA & AI -->
-    <div class="card">
-      <h2>Academic Analytics</h2>
-      <p>🎓 GPA: <strong>3.62</strong></p>
-      <p>📈 Progress Trend: <strong>Improving</strong></p>
-      <p>⚠️ Risk Status: <strong>Low</strong></p>
-      <small>(AI insights placeholder)</small>
-    </div>
-
-    <!-- REQUESTS -->
-    <div class="card">
-      <h2>Result Actions</h2>
-      <p>✔ Request result review</p>
-      <p>✔ Download transcripts</p>
-      <p>✔ Track approval status</p>
-    </div>
-
-    <!-- ANNOUNCEMENTS -->
-    <div class="card">
-      <h2>Department Notices</h2>
-      <p>📢 Mid-semester exams begin next week</p>
-      <p>📢 Result portal closes Friday</p>
-    </div>
-
+<section>
+  <div class="card">
+    <h2>Your Results</h2>
+    <p>Results will appear here once approved.</p>
   </div>
 
-  <button onclick="logout()">Logout</button>
+  <div class="card">
+    <h2>Performance Trends</h2>
+    <p>Predict GPA, track progress, identify strengths.</p>
+  </div>
 
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
-<script>
-  const token = localStorage.getItem("idToken");
-  if (!token) window.location.href = "index.html";
-
-  const user = jwt_decode(token);
-  const groups = user["cognito:groups"] || [];
-  if (!groups.includes("Students")) window.location.href = "index.html";
-
-  function logout() {
-    localStorage.removeItem("idToken");
-    window.location.href = "index.html";
-  }
-</script>
+  <div class="card">
+    <h2>Appeal & Complaints</h2>
+    <p>Structured, evidence-based academic appeals.</p>
+  </div>
+</section>
 
 </body>
 </html>
