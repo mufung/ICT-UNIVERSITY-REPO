@@ -1,57 +1,56 @@
- <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Authenticating...</title>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
 </head>
 <body>
 
 <script>
-/*
- STEP 1: Get token from URL
- Cognito redirects like:
- auth-callback.html#id_token=XXXX&access_token=YYYY
-*/
+/* FORCE MODE: BLOCK PAGE UNTIL REDIRECT HAPPENS */
 
-const hash = window.location.hash.substring(1);
-const params = new URLSearchParams(hash);
+(function forceRedirect() {
 
-const idToken = params.get("id_token");
+  // 1. Read tokens from URL
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  const idToken = params.get("id_token");
 
-if (!idToken) {
-  alert("Authentication failed: No token received");
-  window.location.href = "index.html";
-}
+  if (!idToken) {
+    alert("Login failed. No token.");
+    window.location.replace("index.html");
+    return;
+  }
 
-/*
- STEP 2: Decode JWT (NO LIBRARY NEEDED)
-*/
-function parseJwt(token) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  return JSON.parse(atob(base64));
-}
+  // 2. Decode JWT
+  function decodeJWT(token) {
+    const base64 = token.split('.')[1]
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    return JSON.parse(atob(base64));
+  }
 
-const decoded = parseJwt(idToken);
+  const decoded = decodeJWT(idToken);
 
-/*
- STEP 3: Read Cognito groups
-*/
-const groups = decoded["cognito:groups"] || [];
+  // 3. Save session (FORCE persistence)
+  sessionStorage.setItem("idToken", idToken);
+  sessionStorage.setItem("userRole", JSON.stringify(decoded["cognito:groups"]));
 
-/*
- STEP 4: Redirect based on role
-*/
-if (groups.includes("Students")) {
-  window.location.replace("student-dashboard.html");
-}
-else if (groups.includes("Teachers")) {
-  window.location.replace("teacher-dashboard.html");
-}
-else {
-  alert("User has no role assigned. Contact admin.");
-  window.location.replace("index.html");
-}
+  // 4. FORCE role-based redirect
+  const groups = decoded["cognito:groups"] || [];
+
+  if (groups.includes("Teachers")) {
+    window.location.replace("teacher-dashboard.html");
+  }
+  else if (groups.includes("Students")) {
+    window.location.replace("student-dashboard.html");
+  }
+  else {
+    alert("No role assigned.");
+    window.location.replace("index.html");
+  }
+
+})();
 </script>
 
 </body>
