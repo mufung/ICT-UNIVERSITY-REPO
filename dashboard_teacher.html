@@ -1,149 +1,193 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Teacher Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Teacher Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  margin: 0;
-  font-family: Inter, Arial, sans-serif;
-  background: #f5f6f8;
-  color: #0a2540;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: #f4f7fb;
+      color: #0a2540;
+    }
 
-header {
-  background: #0a2540;
-  color: white;
-  padding: 30px;
-}
+    header {
+      background: linear-gradient(135deg, #0a2540, #0d3b66);
+      color: white;
+      padding: 40px;
+    }
 
-header h1 {
-  margin: 0;
-}
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
-main {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 20px;
-}
+    header p {
+      opacity: 0.85;
+    }
 
-.section {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
+    main {
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
+    }
 
-.section h2 {
-  margin-top: 0;
-  margin-bottom: 16px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
 
-label {
-  display: block;
-  margin-top: 14px;
-  font-weight: 600;
-}
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
 
-input, select {
-  width: 100%;
-  padding: 12px;
-  margin-top: 6px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
 
-button {
-  margin-top: 20px;
-  padding: 12px 22px;
-  border-radius: 24px;
-  border: none;
-  background: #0a2540;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
-}
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
 
-.status {
-  margin-top: 14px;
-  font-size: 14px;
-}
-</style>
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 14px;
+    }
+
+    button {
+      padding: 12px 22px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
   <h1>Teacher Dashboard</h1>
-  <p>Manage student results and academic records</p>
+  <p>Manage results, courses, departments & analytics</p>
 </header>
 
 <main>
 
-<!-- UPLOAD RESULTS -->
-<section class="section">
-  <h2>Upload Student Results</h2>
+  <div class="grid">
 
-  <label>Department</label>
-  <select id="department">
-    <option>Computer Science</option>
-    <option>Engineering</option>
-    <option>Business</option>
-  </select>
+    <!-- RESULT UPLOAD -->
+    <div class="card">
+      <h2>Upload Student Results</h2>
 
-  <label>Course Code</label>
-  <input id="course" placeholder="CSC301">
+      <label>Department</label>
+      <select id="department">
+        <option>Computer Science</option>
+        <option>Engineering</option>
+        <option>Business</option>
+      </select>
 
-  <label>Level</label>
-  <select id="level">
-    <option>100</option>
-    <option>200</option>
-    <option>300</option>
-    <option>400</option>
-  </select>
+      <label>Course Code</label>
+      <input type="text" id="course" placeholder="CSC301" />
 
-  <label>Results File</label>
-  <input type="file" id="file" accept=".csv,.xlsx,.pdf">
+      <label>Level</label>
+      <select id="level">
+        <option>100</option>
+        <option>200</option>
+        <option>300</option>
+        <option>400</option>
+      </select>
 
-  <button onclick="uploadResults()">Upload Results</button>
+      <label>Upload File</label>
+      <input type="file" />
 
-  <div class="status" id="uploadStatus"></div>
-</section>
+      <button class="primary" onclick="uploadResults()">Submit Results</button>
+      <div id="uploadStatus" class="status"></div>
+    </div>
 
-<!-- RESULT STATUS -->
-<section class="section">
-  <h2>Uploaded Results Status</h2>
-  <p>CSC301 — <strong>Pending Approval</strong></p>
-  <p>MTH201 — <strong>Approved</strong></p>
-</section>
+    <!-- AI ANALYTICS -->
+    <div class="card">
+      <h2>AI Performance Analytics</h2>
+      <p>📊 Pass Rate Prediction: <strong>78%</strong></p>
+      <p>⚠️ Students At Risk: <strong>12</strong></p>
+      <p>📈 Course Difficulty Index: <strong>Medium</strong></p>
+      <small>(AI insights – Lambda integration later)</small>
+    </div>
 
-<!-- COMMUNICATION -->
-<section class="section">
-  <h2>Class Communication</h2>
-  <button onclick="sendAnnouncement()">Send Announcement</button>
-  <div class="status" id="announceStatus"></div>
-</section>
+    <!-- COURSE MANAGEMENT -->
+    <div class="card">
+      <h2>Course Management</h2>
+      <p>✔ Assign lecturers</p>
+      <p>✔ Validate uploaded results</p>
+      <p>✔ Lock / unlock result visibility</p>
+    </div>
+
+    <!-- COMMUNICATION -->
+    <div class="card">
+      <h2>Student Communication</h2>
+      <p>📢 Send announcements</p>
+      <p>💬 Respond to result complaints</p>
+      <p>📧 Notify students of updates</p>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <button class="danger" onclick="logout()">Logout</button>
+  </div>
 
 </main>
 
-<script>
-function uploadResults() {
-  const status = document.getElementById("uploadStatus");
-  status.textContent = "Uploading results...";
-  setTimeout(() => {
-    status.textContent = "Results uploaded successfully. Awaiting approval.";
-    status.style.color = "green";
-  }, 1500);
-}
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
-function sendAnnouncement() {
-  const status = document.getElementById("announceStatus");
-  status.textContent = "Announcement sent to students.";
-  status.style.color = "green";
-}
+<script>
+  const token = localStorage.getItem("idToken");
+  if (!token) window.location.href = "index.html";
+
+  const user = jwt_decode(token);
+  const groups = user["cognito:groups"] || [];
+  if (!groups.includes("Teachers")) window.location.href = "index.html";
+
+  function uploadResults() {
+    document.getElementById("uploadStatus").textContent =
+      "Results uploaded successfully (ready for Lambda processing).";
+  }
+
+  function logout() {
+    localStorage.removeItem("idToken");
+    window.location.href = "index.html";
+  }
 </script>
 
 </body>
