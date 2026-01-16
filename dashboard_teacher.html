@@ -1,29 +1,53 @@
  <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teacher Dashboard | ICT University</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/aws-amplify@5.0.0/dist/aws-amplify.min.js"></script>
+  <title>Teacher Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, sans-serif;
+      background: #020617;
+      color: white;
+    }
+    header {
+      padding: 20px;
+      background: #020617;
+      border-bottom: 1px solid #1e293b;
+    }
+    .content {
+      padding: 30px;
+    }
+    .card {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <h1>ICTU Teacher Dashboard</h1>
-    <button id="signout-btn" class="btn small">Sign Out</button>
-  </nav>
 
-  <main class="fade-in">
-    <section class="dashboard-section">
-      <h2>Welcome, Lecturer</h2>
-      <p>Upload grades, manage requests, and ensure accuracy of student results.</p>
-      <div class="actions">
-        <button class="btn">Upload Results</button>
-        <button class="btn">Review Corrections</button>
-      </div>
-    </section>
-  </main>
+<header>
+  <h2>Teacher Dashboard</h2>
+</header>
 
-  <script src="app.js"></script>
+<div class="content">
+  <div class="card">
+    <h3>Student Submissions</h3>
+    <p>Review, correct, comment on student work.</p>
+  </div>
+
+  <div class="card">
+    <h3>Grade Management</h3>
+    <p>Upload results and feedback.</p>
+  </div>
+
+  <div class="card">
+    <h3>Communication</h3>
+    <p>Interact with students directly.</p>
+  </div>
+</div>
+
 </body>
 </html>
