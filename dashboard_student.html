@@ -1,56 +1,37 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Student Dashboard</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #f4f6f8;
-      padding: 40px;
-    }
-    button {
-      padding: 10px 20px;
-    }
-  </style>
 </head>
 <body>
 
-  <h1>Student Dashboard</h1>
-  <p>Welcome, Student.</p>
+<h2>Student Dashboard</h2>
 
-  <button onclick="logout()">Logout</button>
+<button onclick="logout()">Logout</button>
 
-  <script>
-    function logout() {
-      localStorage.clear();
-      window.location.href =
-        "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/logout" +
-        "?client_id=7ugvqkg6l7859oto4v5vcjqjus" +
-        "&logout_uri=https://main.d3enyvo3amjsbz.amplifyapp.com/index.html";
-    }
-  </script>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
-  <script>
-(function enforceAuth() {
+<script>
+  const token = localStorage.getItem("idToken");
 
-  const role = JSON.parse(sessionStorage.getItem("userRole"));
-
-  if (!role) {
-    window.location.replace("index.html");
-    return;
+  if (!token) {
+    window.location.href = "index.html";
   }
 
-  if (window.location.pathname.includes("teacher") && !role.includes("Teachers")) {
-    window.location.replace("index.html");
+  const user = jwt_decode(token);
+  const groups = user["cognito:groups"] || [];
+
+  if (!groups.includes("Students")) {
+    alert("Access denied");
+    window.location.href = "index.html";
   }
 
-  if (window.location.pathname.includes("student") && !role.includes("Students")) {
-    window.location.replace("index.html");
+  function logout() {
+    localStorage.removeItem("idToken");
+    window.location.href = "index.html";
   }
-
-})();
 </script>
-
 
 </body>
 </html>
