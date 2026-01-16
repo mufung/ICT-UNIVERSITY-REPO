@@ -1,34 +1,26 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Authenticating</title>
+  <title>Authenticating...</title>
 </head>
 <body>
 
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const idToken = params.get("id_token");
-
-  if (!idToken) {
-    window.location.href = "index.html";
+  const token = localStorage.getItem("idToken");
+  if (!token) {
+    window.location.href = "signin.html";
   }
 
-  localStorage.setItem("idToken", idToken);
-
-  const user = jwt_decode(idToken);
+  const user = jwt_decode(token);
   const groups = user["cognito:groups"] || [];
 
   if (groups.includes("Teachers")) {
-    window.location.replace("dashboard_teacher.html");
-  } else if (groups.includes("Students")) {
-    window.location.replace("dashboard_student.html");
+    window.location.href = "dashboard_teacher.html";
   } else {
-    localStorage.removeItem("idToken");
-    window.location.href = "index.html";
+    window.location.href = "dashboard_student.html";
   }
 </script>
 
