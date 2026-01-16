@@ -1,64 +1,72 @@
  <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Student Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="styles.css" />
 
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f5f4f1;
-      color: #0a2540;
+    .dashboard-section {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.75);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
     }
 
-    header {
-      padding: 40px;
-      background: #1d4ed8;
-      color: white;
+    .result-card {
+      background: #f4f6f8;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 14px;
     }
 
-    .content {
-      padding: 48px;
-    }
-
-    button {
-      margin-top: 24px;
-      padding: 12px 24px;
-      border-radius: 999px;
-      border: none;
-      background: #1d4ed8;
-      color: white;
-      cursor: pointer;
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Student Dashboard</h1>
-</header>
+<main class="dashboard-section">
+  <h2>Your Results</h2>
 
-<div class="content">
-  <p>View academic results and submit reports.</p>
-  <button onclick="logout()">Logout</button>
-</div>
+  <div class="result-card">
+    <strong>CSC301</strong><br />
+    Score: Pending
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+  <div class="result-card">
+    <strong>MTH201</strong><br />
+    Score: Pending
+  </div>
+
+  <h3>GPA Projection</h3>
+  <p>Estimated GPA: — (AI prediction pending)</p>
+
+  <h3>Submit Complaint / Appeal</h3>
+  <form id="appealForm">
+    <textarea placeholder="Explain your concern..." required></textarea>
+    <input type="file" accept=".pdf,.jpg,.png" />
+    <button type="submit">Submit Appeal</button>
+    <p id="appealStatus"></p>
+  </form>
+</main>
 
 <script>
-  const token = localStorage.getItem("idToken");
-  if (!token) window.location.href = "index.html";
-
-  const user = jwt_decode(token);
-  const groups = user["cognito:groups"] || [];
-  if (!groups.includes("Students")) window.location.href = "index.html";
-
-  function logout() {
-    localStorage.removeItem("idToken");
-    window.location.href = "index.html";
-  }
+document.getElementById("appealForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const s = document.getElementById("appealStatus");
+  s.textContent = "Appeal submitted. Awaiting review.";
+  s.style.color = "green";
+});
 </script>
 
 </body>
