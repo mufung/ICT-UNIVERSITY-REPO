@@ -136,5 +136,21 @@ document.getElementById("uploadForm").addEventListener("submit", e => {
 });
 </script>
 
+ <script>
+document.getElementById("uploadForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const data = {
+        department: document.querySelector("select").value,
+        courseCode: document.querySelector("input[placeholder='CSC301']").value,
+        level: document.querySelector("select:nth-of-type(2)").value,
+        semester: document.querySelector("select:nth-of-type(3)").value,
+        academicYear: document.querySelector("input[placeholder='2025/2026']").value
+    };
+
+    uploadResults(data);
+});
+</script>
+
 </body>
 </html>
