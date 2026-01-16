@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #f5f4f1;
+      background: linear-gradient(135deg, #f5f4f1, #eef2f7);
       color: #0a2540;
     }
 
@@ -16,20 +16,79 @@
       padding: 40px;
       background: #0a2540;
       color: white;
+      backdrop-filter: blur(10px);
     }
 
     .content {
       padding: 48px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      margin-top: 32px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font-size: 15px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
     }
 
     button {
       margin-top: 24px;
-      padding: 12px 24px;
+      padding: 14px 28px;
       border-radius: 999px;
       border: none;
-      background: #dc2626;
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
       color: white;
       cursor: pointer;
+      font-size: 15px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(220,38,38,0.3);
+    }
+
+    .secondary-btn {
+      background: #0a2540;
+      margin-left: 12px;
+    }
+
+    .file-info {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    .logout-container {
+      margin-top: 40px;
     }
   </style>
 </head>
@@ -42,7 +101,36 @@
 
 <div class="content">
   <p>Manage results and academic workflows.</p>
-  <button onclick="logout()">Logout</button>
+
+  <!-- 🔹 RESULT UPLOAD CARD -->
+  <div class="card">
+    <h2>Upload Student Results</h2>
+
+    <label for="department">Department</label>
+    <select id="department">
+      <option value="">Select Department</option>
+      <option value="Computer Science">Computer Science</option>
+      <option value="Engineering">Engineering</option>
+      <option value="Business">Business</option>
+    </select>
+
+    <label for="course">Course / Subject</label>
+    <input type="text" id="course" placeholder="e.g. Data Structures">
+
+    <label for="resultFile">Upload Result File</label>
+    <input type="file" id="resultFile" accept=".csv,.xlsx,.pdf">
+
+    <div class="file-info" id="fileInfo"></div>
+
+    <label for="remarks">Remarks (Optional)</label>
+    <textarea id="remarks" placeholder="Any additional notes..."></textarea>
+
+    <button onclick="submitResults()">Submit Results</button>
+  </div>
+
+  <div class="logout-container">
+    <button class="secondary-btn" onclick="logout()">Logout</button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
@@ -58,6 +146,37 @@
   function logout() {
     localStorage.removeItem("idToken");
     window.location.href = "index.html";
+  }
+
+  // 🔹 File preview
+  document.getElementById("resultFile").addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      document.getElementById("fileInfo").innerText =
+        `Selected file: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+    }
+  });
+
+  // 🔹 Submit handler (ready for Lambda integration)
+  function submitResults() {
+    const department = document.getElementById("department").value;
+    const course = document.getElementById("course").value;
+    const file = document.getElementById("resultFile").files[0];
+
+    if (!department || !course || !file) {
+      alert("Please fill all required fields and upload a file.");
+      return;
+    }
+
+    // This is where API Gateway + Lambda will be connected later
+    console.log("Prepared payload:", {
+      department,
+      course,
+      fileName: file.name,
+      uploadedBy: user.email || user.username
+    });
+
+    alert("Results prepared successfully. (Lambda integration next)");
   }
 </script>
 
