@@ -1,64 +1,60 @@
  <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Teacher Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Teacher Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-<style>
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: #f5f4f1;
-  color: #0a2540;
-}
-
-header {
-  padding: 80px 8%;
-  background: linear-gradient(120deg, #0a2540, #0e3b64);
-  color: white;
-}
-
-section {
-  padding: 80px 8%;
-}
-
-.card {
-  background: white;
-  padding: 40px;
-  border-radius: 24px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-  margin-bottom: 40px;
-}
-</style>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f5f4f1;
+      color: #0a2540;
+    }
+    header {
+      padding: 40px;
+      background: #0a2540;
+      color: white;
+    }
+    section {
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+    button {
+      padding: 12px 28px;
+      border-radius: 30px;
+      border: none;
+      background: #dc2626;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
   <h1>Teacher Dashboard</h1>
-  <p>Academic authority. Intelligent decisions.</p>
 </header>
 
 <section>
-  <div class="card">
-    <h2>Upload Results</h2>
-    <input type="file">
-    <p>Files are securely processed via AWS Lambda.</p>
-  </div>
-
-  <div class="card">
-    <h2>AI Insights</h2>
-    <p>Detect anomalies, performance trends, and at-risk students.</p>
-  </div>
-
-  <div class="card">
-    <h2>Approval Workflow</h2>
-    <p>Department → Dean → Registrar validation chain.</p>
-  </div>
+  <h2>Upload Results</h2>
+  <p>Submit student results securely.</p>
+  <input type="file"><br><br>
+  <button>Upload</button>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+<script>
+  const token = localStorage.getItem("idToken");
+  if (!token) location.href = "signin.html";
+
+  const user = jwt_decode(token);
+  if (!(user["cognito:groups"] || []).includes("Teachers")) {
+    location.href = "signin.html";
+  }
+</script>
 
 </body>
 </html>
