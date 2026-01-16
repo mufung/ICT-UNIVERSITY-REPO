@@ -1,131 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
+ <!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>ICT University - Sign In</title>
-
-  <!-- AWS Cognito SDKs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.3.1/amazon-cognito-identity.min.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6f8;
-    }
-
-    header {
-      background: #0f4c81;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .container {
-      max-width: 400px;
-      margin: 60px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 6px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #0f4c81;
-      color: white;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .error {
-      color: red;
-      margin-top: 10px;
-      text-align: center;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Signing In</title>
 </head>
 <body>
 
-<header>
-  <h2>ICT UNIVERSITY</h2>
-  <small>Secure Login</small>
-</header>
-
-<div class="container">
-  <h3>Sign In</h3>
-
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
-
-  <button onclick="signIn()">Login</button>
-
-  <div id="error" class="error"></div>
-</div>
+<p>Redirecting to login…</p>
 
 <script>
-  const poolData = {
-    UserPoolId: "us-west-1_mWMVK9JTt",
-    ClientId: "2nvt55hgmp4dr3305drocl11dt"
-  };
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get("role");
 
-  const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-  function signIn() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-      Username: email,
-      Password: password
-    });
-
-    const userData = {
-      Username: email,
-      Pool: userPool
-    };
-
-    const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-
-    cognitoUser.authenticateUser(authDetails, {
-      onSuccess: function (result) {
-        console.log("Login successful");
-
-        // 🔑 STORE TOKEN (optional but safe)
-        localStorage.setItem("idToken", result.getIdToken().getJwtToken());
-
-        // 🔁 ROLE-BASED REDIRECT (ADDED, NOT REMOVED)
-        const role = localStorage.getItem("userRole");
-
-        if (role === "teacher") {
-          window.location.href = "teacher-dashboard.html";
-        } else if (role === "student") {
-          window.location.href = "student-dashboard.html";
-        } else {
-          alert("Role not selected. Returning to home.");
-          window.location.href = "index.html";
-        }
-      },
-
-      onFailure: function (err) {
-        document.getElementById("error").innerText =
-          err.message || "Login failed. Check credentials.";
-      }
-    });
+  if (!role) {
+    alert("Role not specified");
+    window.location.href = "index.html";
   }
+
+  sessionStorage.setItem("expectedRole", role);
+
+  const domain = "us-west-1mbnfq4dcv";
+  const region = "us-west-1";
+  const clientId = "7ugvqkg6l7859oto4v5vcjqjus";
+  const redirectUri = "https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
+
+  const loginUrl =
+    `https://${domain}.auth.${region}.amazoncognito.com/login` +
+    `?client_id=${clientId}` +
+    `&response_type=token` +
+    `&scope=openid+email+profile` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+  window.location.href = loginUrl;
 </script>
 
 </body>
