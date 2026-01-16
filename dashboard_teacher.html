@@ -11,7 +11,6 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
-      cursor: pointer;
     }
     #status {
       margin-top: 20px;
@@ -32,9 +31,9 @@
 <script>
   const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
 
-  function getIdToken() {
+  function getAccessToken() {
     for (let key in localStorage) {
-      if (key.includes("idToken")) {
+      if (key.includes("accessToken")) {
         return localStorage.getItem(key);
       }
     }
@@ -42,24 +41,23 @@
   }
 
   document.getElementById("submitBtn").addEventListener("click", async () => {
-    const fileInput = document.getElementById("fileInput");
     const status = document.getElementById("status");
+    const fileInput = document.getElementById("fileInput");
 
     if (!fileInput.files.length) {
-      status.innerText = "Please select a JSON file";
+      status.innerText = "Please select a file";
       return;
     }
 
-    const token = getIdToken();
-
+    const token = getAccessToken();
     if (!token) {
-      status.innerText = "Not authenticated. Please sign in again.";
+      status.innerText = "Authentication error. Please sign in again.";
       return;
     }
 
     const file = fileInput.files[0];
     const text = await file.text();
-    const data = JSON.parse(text);
+    const jsonData = JSON.parse(text);
 
     status.innerText = "Uploading...";
 
@@ -68,9 +66,9 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
+          "Authorization": token
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(jsonData)
       });
 
       const result = await response.json();
