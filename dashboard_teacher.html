@@ -1,60 +1,29 @@
  <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Teacher Dashboard</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f5f4f1;
-      color: #0a2540;
-    }
-    header {
-      padding: 40px;
-      background: #0a2540;
-      color: white;
-    }
-    section {
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
-    }
-    button {
-      padding: 12px 28px;
-      border-radius: 30px;
-      border: none;
-      background: #dc2626;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Dashboard | ICT University</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/aws-amplify@5.0.0/dist/aws-amplify.min.js"></script>
 </head>
-
 <body>
+  <nav class="navbar">
+    <h1>ICTU Teacher Dashboard</h1>
+    <button id="signout-btn" class="btn small">Sign Out</button>
+  </nav>
 
-<header>
-  <h1>Teacher Dashboard</h1>
-</header>
+  <main class="fade-in">
+    <section class="dashboard-section">
+      <h2>Welcome, Lecturer</h2>
+      <p>Upload grades, manage requests, and ensure accuracy of student results.</p>
+      <div class="actions">
+        <button class="btn">Upload Results</button>
+        <button class="btn">Review Corrections</button>
+      </div>
+    </section>
+  </main>
 
-<section>
-  <h2>Upload Results</h2>
-  <p>Submit student results securely.</p>
-  <input type="file"><br><br>
-  <button>Upload</button>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-<script>
-  const token = localStorage.getItem("idToken");
-  if (!token) location.href = "signin.html";
-
-  const user = jwt_decode(token);
-  if (!(user["cognito:groups"] || []).includes("Teachers")) {
-    location.href = "signin.html";
-  }
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
