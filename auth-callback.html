@@ -2,7 +2,6 @@
 <html>
 <head>
   <meta charset="UTF-8">
-<<<<<<< HEAD
   <title>Authenticating…</title>
 </head>
 <body>
@@ -12,24 +11,11 @@
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
-=======
-  <title>Redirecting...</title>
-</head>
-<body>
-
-<script>
-/* FORCE MODE: BLOCK PAGE UNTIL REDIRECT HAPPENS */
-
-(function forceRedirect() {
-
-  // 1. Read tokens from URL
->>>>>>> 04332680adcc450deccde2a530721a4aec888dfe
   const hash = window.location.hash.substring(1);
   const params = new URLSearchParams(hash);
   const idToken = params.get("id_token");
 
   if (!idToken) {
-<<<<<<< HEAD
     alert("Login failed");
     window.location.href = "index.html";
   }
@@ -50,42 +36,6 @@
     localStorage.removeItem("idToken");
     window.location.href = "index.html";
   }
-=======
-    alert("Login failed. No token.");
-    window.location.replace("index.html");
-    return;
-  }
-
-  // 2. Decode JWT
-  function decodeJWT(token) {
-    const base64 = token.split('.')[1]
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
-    return JSON.parse(atob(base64));
-  }
-
-  const decoded = decodeJWT(idToken);
-
-  // 3. Save session (FORCE persistence)
-  sessionStorage.setItem("idToken", idToken);
-  sessionStorage.setItem("userRole", JSON.stringify(decoded["cognito:groups"]));
-
-  // 4. FORCE role-based redirect
-  const groups = decoded["cognito:groups"] || [];
-
-  if (groups.includes("Teachers")) {
-    window.location.replace("teacher-dashboard.html");
-  }
-  else if (groups.includes("Students")) {
-    window.location.replace("student-dashboard.html");
-  }
-  else {
-    alert("No role assigned.");
-    window.location.replace("index.html");
-  }
-
-})();
->>>>>>> 04332680adcc450deccde2a530721a4aec888dfe
 </script>
 
 </body>
