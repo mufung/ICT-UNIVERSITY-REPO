@@ -1,57 +1,29 @@
  <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Student Dashboard</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f5f4f1;
-      color: #020617;
-    }
-    header {
-      padding: 40px;
-      background: #020617;
-      color: white;
-    }
-    section {
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      margin-bottom: 16px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard | ICT University</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/aws-amplify@5.0.0/dist/aws-amplify.min.js"></script>
 </head>
-
 <body>
+  <nav class="navbar">
+    <h1>ICTU Student Dashboard</h1>
+    <button id="signout-btn" class="btn small">Sign Out</button>
+  </nav>
 
-<header>
-  <h1>Student Dashboard</h1>
-</header>
+  <main class="fade-in">
+    <section class="dashboard-section">
+      <h2>Welcome, Student</h2>
+      <p>Here you can view results, request corrections, and monitor updates.</p>
+      <div class="actions">
+        <button class="btn">View Results</button>
+        <button class="btn">Request Correction</button>
+      </div>
+    </section>
+  </main>
 
-<section>
-  <div class="card">
-    <strong>CSC301</strong><br>
-    Status: Pending
-  </div>
-  <div class="card">
-    <strong>MTH201</strong><br>
-    Status: Uploaded
-  </div>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-<script>
-  const token = localStorage.getItem("idToken");
-  if (!token) location.href = "signin.html";
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
