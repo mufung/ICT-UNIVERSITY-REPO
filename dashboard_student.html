@@ -1,73 +1,539 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Student Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="stylesheet" href="styles.css" />
-
-  <style>
-    .dashboard-section {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 16px;
-      backdrop-filter: blur(12px);
-      background: rgba(255, 255, 255, 0.75);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-    }
-
-    .result-card {
-      background: #f4f6f8;
-      padding: 16px;
-      border-radius: 10px;
-      margin-bottom: 14px;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - University RMS</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #9b59b6;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+        
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2980b9 100%);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .header-content h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-content h1::before {
+            content: "🎓";
+            font-size: 1.5em;
+        }
+        
+        .student-info {
+            text-align: right;
+        }
+        
+        .student-id {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        /* MAIN CONTENT */
+        .main-content {
+            padding: 30px;
+            display: grid;
+            gap: 30px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        /* GRID LAYOUTS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        /* CARDS */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .grade-card {
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .warning-card {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .danger-card {
+            border-left: 4px solid var(--danger);
+        }
+        
+        /* GRADE BADGES */
+        .grade-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        
+        .grade-A { background: #2ecc71; color: white; }
+        .grade-B { background: #3498db; color: white; }
+        .grade-C { background: #f39c12; color: white; }
+        .grade-D { background: #e74c3c; color: white; }
+        
+        /* PROGRESS BARS */
+        .progress-container {
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        /* AI INSIGHTS */
+        .ai-insight {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+        
+        .ai-insight h4 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* BUTTONS */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #2980b9 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* APPEAL FORM */
+        .appeal-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 1em;
+        }
+        
+        /* BADGES */
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 8px;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .student-info {
+                text-align: center;
+            }
+        }
+        
+        /* ANIMATIONS */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="dashboard-container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Student Dashboard</h1>
+                <p>Academic Performance & Career Planning Portal</p>
+            </div>
+            <div class="student-info">
+                <div class="student-id">STU-2024-7890</div>
+                <p>Alex Johnson • Computer Science</p>
+                <small>Current GPA: 3.42 • Expected Graduation: May 2025</small>
+            </div>
+        </header>
+        
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- SECTION 1: ACADEMIC RESULTS -->
+            <section class="section">
+                <h2 class="section-title">📚 Academic Results</h2>
+                
+                <div class="grid-3">
+                    <div class="card grade-card">
+                        <h3>Data Structures (CSC301)</h3>
+                        <p>Fall 2024 • Prof. Michael Chen</p>
+                        <div style="margin-top: 15px;">
+                            <span class="grade-badge grade-A">A</span>
+                            <strong style="font-size: 1.2em;">92%</strong>
+                        </div>
+                        <button class="btn btn-secondary" onclick="viewDetailedGrade('CSC301')" style="margin-top: 15px; padding: 8px 16px;">View Details</button>
+                    </div>
+                    
+                    <div class="card grade-card">
+                        <h3>Linear Algebra (MTH201)</h3>
+                        <p>Fall 2024 • Prof. Sarah Williams</p>
+                        <div style="margin-top: 15px;">
+                            <span class="grade-badge grade-B">B+</span>
+                            <strong style="font-size: 1.2em;">87%</strong>
+                        </div>
+                        <button class="btn btn-secondary" onclick="viewDetailedGrade('MTH201')" style="margin-top: 15px; padding: 8px 16px;">View Details</button>
+                    </div>
+                    
+                    <div class="card warning-card">
+                        <h3>Calculus II (MTH202)</h3>
+                        <p>Fall 2024 • Prof. Robert Kim</p>
+                        <div style="margin-top: 15px;">
+                            <span class="grade-badge grade-C">C</span>
+                            <strong style="font-size: 1.2em;">72%</strong>
+                        </div>
+                        <button class="btn btn-danger" onclick="appealGrade('MTH202')" style="margin-top: 15px; padding: 8px 16px;">Appeal Grade</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- SECTION 2: AI PREDICTIVE ANALYTICS -->
+            <section class="section">
+                <h2 class="section-title">📈 AI Performance Analytics</h2>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🎯 GPA Prediction</h4>
+                        <div class="progress-container">
+                            <div>Current: 3.42 • Predicted: <strong>3.58</strong></div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <small>Based on current performance trends</small>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>⚠️ Risk Assessment</h4>
+                        <div style="margin: 15px 0;">
+                            <span class="badge">LOW RISK</span>
+                            <p style="color: #2ecc71; margin-top: 5px;">✓ On track for graduation</p>
+                        </div>
+                        <small>Next review: Next semester</small>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>📊 Skill Gap Analysis</h4>
+                        <ul style="margin: 15px 0; padding-left: 20px;">
+                            <li>Algorithms: <span style="color: #2ecc71;">Strong</span></li>
+                            <li>Calculus: <span style="color: #e74c3c;">Needs Improvement</span></li>
+                            <li>Data Structures: <span style="color: #2ecc71;">Excellent</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>🎓 Graduation Progress</h4>
+                        <div class="progress-container">
+                            <div>62% Complete</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 62%"></div>
+                            </div>
+                        </div>
+                        <small>42 credits remaining</small>
+                    </div>
+                </div>
+                
+                <div class="ai-insight">
+                    <h4>🤖 AI Recommendation</h4>
+                    <p>Based on your performance pattern, we recommend focusing on Calculus concepts. Consider attending the Math Center's workshop series starting next week.</p>
+                </div>
+            </section>
+            
+            <!-- SECTION 3: APPEALS & COMPLAINTS -->
+            <section class="section">
+                <h2 class="section-title">📝 Grade Appeals System</h2>
+                
+                <div class="card warning-card">
+                    <h4>Appeal Status: Calculus II (MTH202)</h4>
+                    <p>Grade: C (72%) • Submitted: Dec 10, 2024</p>
+                    <div style="margin: 15px 0; padding: 12px; background: #fff3cd; border-radius: 8px;">
+                        <strong>Appeal Success Probability: 72%</strong>
+                        <p style="margin-top: 5px; font-size: 0.9em;">Based on similar historical cases and evidence strength</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAppealForm()">
+                        📎 Submit New Appeal
+                    </button>
+                </div>
+                
+                <div id="appealForm" class="appeal-form">
+                    <h4>New Grade Appeal</h4>
+                    <select class="form-control">
+                        <option>Select Course</option>
+                        <option>Calculus II (MTH202)</option>
+                        <option>Linear Algebra (MTH201)</option>
+                        <option>Data Structures (CSC301)</option>
+                    </select>
+                    
+                    <textarea class="form-control" rows="4" placeholder="Describe the issue..."></textarea>
+                    
+                    <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                    <small>Upload evidence: exam paper, assignment copy, etc.</small>
+                    
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-success" onclick="submitAppeal()">Submit Appeal</button>
+                        <button class="btn btn-secondary" onclick="hideAppealForm()">Cancel</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- SECTION 4: CAREER PLANNING -->
+            <section class="section">
+                <h2 class="section-title">💼 Career & Professional Development</h2>
+                
+                <div class="grid-3">
+                    <div class="card">
+                        <h4>📄 Digital Transcript</h4>
+                        <p>Blockchain-verified academic record</p>
+                        <button class="btn btn-primary" onclick="viewTranscript()" style="margin-top: 10px;">View Transcript</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>🏆 Skill Badges</h4>
+                        <div style="margin: 15px 0;">
+                            <span class="badge">Programming</span>
+                            <span class="badge">Data Analysis</span>
+                            <span class="badge">Problem Solving</span>
+                        </div>
+                        <small>Awarded based on course performance</small>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>🤝 Employer Sharing</h4>
+                        <p>Share verified grades with employers</p>
+                        <div style="margin-top: 15px;">
+                            <label style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="consentCheckbox">
+                                Grant consent for employer access
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 20px; background: #e8f4fd; border-radius: 12px;">
+                    <h4>🎯 Recommended Career Paths</h4>
+                    <p>Based on your academic performance, AI recommends:</p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Software Engineering (85% match)</li>
+                        <li>Data Science (78% match)</li>
+                        <li>Machine Learning Engineering (72% match)</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
 
-<main class="dashboard-section">
-  <h2>Your Results</h2>
-
-  <div class="result-card">
-    <strong>CSC301</strong><br />
-    Score: Pending
-  </div>
-
-  <div class="result-card">
-    <strong>MTH201</strong><br />
-    Score: Pending
-  </div>
-
-  <h3>GPA Projection</h3>
-  <p>Estimated GPA: — (AI prediction pending)</p>
-
-  <h3>Submit Complaint / Appeal</h3>
-  <form id="appealForm">
-    <textarea placeholder="Explain your concern..." required></textarea>
-    <input type="file" accept=".pdf,.jpg,.png" />
-    <button type="submit">Submit Appeal</button>
-    <p id="appealStatus"></p>
-  </form>
-</main>
-
-<script>
-document.getElementById("appealForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const s = document.getElementById("appealStatus");
-  s.textContent = "Appeal submitted. Awaiting review.";
-  s.style.color = "green";
-});
-</script>
-
-</body>
-</html>
+    <!-- JAVASCRIPT FUNCTIONS -->
+    <script>
+        // Function to view detailed grade
+        function viewDetailedGrade(course) {
+            alert(`Grade Details - ${course}\n\n` +
+                  `Overall Grade: ${course === 'CSC301' ? 'A (92%)' : 'B+ (87%)'}\n` +
+                  `Class Average: ${course === 'CSC301' ? 'B (83%)' : 'B- (80%)'}\n` +
+                  `Percentile: ${course === 'CSC301' ? 'Top 15%' : 'Top 30%'}\n` +
+                  `Breakdown:\n` +
+                  `• Assignments: 95%\n` +
+                  `• Midterm: 88%\n` +
+                  `• Final Exam: 92%\n` +
+                  `• Projects: 94%\n\n` +
+                  `AI Feedback: Excellent performance in ${course === 'CSC301' ? 'algorithm implementation' : 'theoretical concepts'}`);
+        }
+        
+        // Function to appeal a grade
+        function appealGrade(course) {
+            alert(`Initiating Grade Appeal for ${course}\n\n` +
+                  `Your current grade: C (72%)\n` +
+                  `Class average: B- (80%)\n\n` +
+                  `Before submitting an appeal:\n` +
+                  `1. Review your graded materials\n` +
+                  `2. Gather evidence (scanned papers, assignments)\n` +
+                  `3. Prepare a detailed explanation\n\n` +
+                  `Appeal success rate for similar cases: 68%`);
+            showAppealForm();
+        }
+        
+        // Show/hide appeal form
+        function showAppealForm() {
+            document.getElementById('appealForm').style.display = 'block';
+        }
+        
+        function hideAppealForm() {
+            document.getElementById('appealForm').style.display = 'none';
+        }
+        
+        // Submit appeal
+        function submitAppeal() {
+            alert("✅ Appeal Submitted Successfully!\n\n" +
+                  "Your appeal has been sent to the department head.\n" +
+                  "You will receive a response within 5-7 business days.\n\n" +
+                  "A blockchain record of your appeal has been created for transparency.");
+            hideAppealForm();
+        }
+        
+        // View transcript
+        function viewTranscript() {
+            const hash = "0x45a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a";
+            alert(`📜 Blockchain-Verified Transcript\n\n` +
+                  `Student: Alex Johnson\n` +
+                  `ID: STU-2024-7890\n` +
+                  `Program: B.Sc. Computer Science\n` +
+                  `GPA: 3.42\n\n` +
+                  `Blockchain Verification:\n` +
+                  `Hash: ${hash}\n` +
+                  `Status: ✓ Immutable Record\n` +
+                  `Verified: ${new Date().to
