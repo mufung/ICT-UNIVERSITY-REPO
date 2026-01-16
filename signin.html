@@ -1,23 +1,38 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
-    <title>Sign In | ICT University</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <title>Signing In</title>
 </head>
 <body>
 
-<div class="form-box">
-    <h2>Sign In</h2>
+<p>Redirecting to login…</p>
 
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get("role");
 
-    <button onclick="signIn()">Sign In</button>
+  if (!role) {
+    alert("Role not specified");
+    window.location.href = "index.html";
+  }
 
-    <p>Don't have an account? <a href="register.html">Register</a></p>
-</div>
+  sessionStorage.setItem("expectedRole", role);
 
-<script src="js/config.js"></script>
-<script src="js/auth.js"></script>
+  const domain = "us-west-1mbnfq4dcv";
+  const region = "us-west-1";
+  const clientId = "7ugvqkg6l7859oto4v5vcjqjus";
+  const redirectUri = "https://main.d3enyvo3amjsbz.amplifyapp.com/auth-callback.html";
+
+  const loginUrl =
+    `https://${domain}.auth.${region}.amazoncognito.com/login` +
+    `?client_id=${clientId}` +
+    `&response_type=token` +
+    `&scope=openid+email+profile` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+  window.location.href = loginUrl;
+</script>
+
 </body>
 </html>

@@ -1,27 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Teacher Dashboard</title>
-    <link rel="stylesheet" href="css/main.css">
+  <title>Teacher Dashboard</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      padding: 40px;
+    }
+    button {
+      padding: 10px 20px;
+    }
+  </style>
 </head>
 <body>
 
-<header class="header">
-    <h2>Teacher Dashboard</h2>
-</header>
+  <h1>Teacher Dashboard</h1>
+  <p>Welcome, Teacher.</p>
 
-<div class="container">
-    <div class="card">
-        <h3>Upload Results</h3>
-        <p>Upload department results securely.</p>
-    </div>
+  <button onclick="logout()">Logout</button>
 
-    <div class="card">
-        <h3>Review Student Requests</h3>
-        <p>View and resolve reported issues.</p>
-    </div>
-</div>
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href =
+        "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com/logout" +
+        "?client_id=7ugvqkg6l7859oto4v5vcjqjus" +
+        "&logout_uri=https://main.d3enyvo3amjsbz.amplifyapp.com/index.html";
+    }
+  </script>
 
-<script src="js/teacher.js"></script>
+
+  <script>
+(function enforceAuth() {
+
+  const role = JSON.parse(sessionStorage.getItem("userRole"));
+
+  if (!role) {
+    window.location.replace("index.html");
+    return;
+  }
+
+  if (window.location.pathname.includes("teacher") && !role.includes("Teachers")) {
+    window.location.replace("index.html");
+  }
+
+  if (window.location.pathname.includes("student") && !role.includes("Students")) {
+    window.location.replace("index.html");
+  }
+
+})();
+</script>
+
+
 </body>
 </html>

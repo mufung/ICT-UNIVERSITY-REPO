@@ -1,34 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>ICT University | Results Portal</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <title>ICT University | Home</title>
 </head>
 <body>
 
-<header class="header">
-    <h1>ICT University </h1>
-    <p>Smart Results Management System</p>
-</header>
+<h1>ICT University</h1>
+<p>Results Management System</p>
 
-<div class="container">
-    <div class="card">
-        <h2>Students</h2>
-        <p>View results, report errors, track corrections.</p>
-        <a href="signin.html" class="btn">Student Login</a>
-    </div>
+<button onclick="goTeacher()">Teacher Login</button>
+<button onclick="goStudent()">Student Login</button>
 
-    <div class="card">
-        <h2>Teachers</h2>
-        <p>Upload results, review student requests.</p>
-        <a href="signin.html" class="btn">Teacher Login</a>
-    </div>
-</div>
+<script>
+  function goTeacher() {
+    window.location.href = "signin.html?role=Teachers";
+  }
 
-<footer>
-    <p>© ICT University | Powered by AWS</p>
-</footer>
+  function goStudent() {
+    window.location.href = "signin.html?role=Students";
+  }
+</script>
 
 </body>
 </html>

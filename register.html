@@ -1,25 +1,32 @@
-<!DOCTYPE html>
-<html>
+ <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Register | ICT University</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <title>Register | ICT University</title>
+  <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
 
-<div class="form-box">
-    <h2>Create Account</h2>
+<body class="auth-body">
 
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <select id="role">
-        <option value="student">Student</option>
-        <option value="teacher">Teacher</option>
-    </select>
+<h2>Create Account</h2>
+<p>Register to access the system</p>
 
-    <button onclick="register()">Register</button>
-</div>
+<button onclick="register()">Register</button>
 
-<script src="js/config.js"></script>
-<script src="js/auth.js"></script>
+<script>
+function register() {
+  const domain = "https://us-west-1mbnfq4dcv.auth.us-west-1.amazoncognito.com";
+  const clientId = "7ugvqkg6l7859oto4v5vcjqjus";
+  const redirectUri = "https://main.d3enyvo3amjsbz.amplifyapp.com/signin.html";
+
+  window.location.href =
+    domain + "/signup" +
+    "?client_id=" + clientId +
+    "&response_type=token" +
+    "&scope=openid+email+profile" +
+    "&redirect_uri=" + redirectUri;
+}
+</script>
+
 </body>
 </html>
