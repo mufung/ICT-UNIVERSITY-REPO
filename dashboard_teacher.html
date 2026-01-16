@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Teacher Dashboard</title>
 
-  <!-- ✅ LOAD AWS AMPLIFY (THIS IS WHAT YOU WERE MISSING) -->
-  <script src="https://unpkg.com/aws-amplify@5.3.6/dist/aws-amplify.min.js"></script>
+  <!-- ✅ CORRECT AMPLIFY BUILD (GLOBAL Amplify EXISTS HERE) -->
+  <script src="https://unpkg.com/aws-amplify@4.3.27/dist/aws-amplify.min.js"></script>
 
   <style>
     body {
@@ -15,6 +15,7 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
+      cursor: pointer;
     }
     #status {
       margin-top: 20px;
@@ -33,7 +34,9 @@
 <div id="status"></div>
 
 <script>
-  // ✅ CONFIGURE AMPLIFY (REQUIRED)
+  console.log("Page loaded");
+
+  // ✅ CONFIGURE AMPLIFY
   Amplify.configure({
     Auth: {
       region: "us-west-1",
@@ -45,6 +48,8 @@
   const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
 
   document.getElementById("submitBtn").addEventListener("click", async () => {
+    alert("BUTTON CLICKED"); // 🔥 proves button works
+
     const status = document.getElementById("status");
     const fileInput = document.getElementById("fileInput");
 
@@ -54,7 +59,9 @@
     }
 
     try {
-      // ✅ GET COGNITO TOKEN
+      status.innerText = "Getting session...";
+
+      // ✅ GET COGNITO SESSION
       const session = await Amplify.Auth.currentSession();
       const idToken = session.getIdToken().getJwtToken();
 
@@ -63,19 +70,20 @@
       const text = await file.text();
       const jsonData = JSON.parse(text);
 
-      status.innerText = "Uploading...";
+      status.innerText = "Uploading to API Gateway...";
 
-      // ✅ SEND TO API GATEWAY
+      // ✅ CALL API
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
+          "Authorization": idToken
         },
         body: JSON.stringify(jsonData)
       });
 
       const result = await response.json();
+      console.log("API response:", result);
 
       if (!response.ok) {
         throw new Error(result.message || "Upload failed");
@@ -84,7 +92,7 @@
       status.innerText = "Upload successful ✅";
 
     } catch (err) {
-      console.error(err);
+      console.error("UPLOAD ERROR:", err);
       status.innerText = "Upload failed ❌ (check console)";
     }
   });
