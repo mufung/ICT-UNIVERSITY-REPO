@@ -1,19 +1,53 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <title>Signing In</title>
+
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f5f4f1;
+      font-family: 'Inter', sans-serif;
+      color: #0a2540;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(18px);
+      padding: 48px;
+      border-radius: 28px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(10,37,64,0.1);
+    }
+
+    h2 {
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
 </head>
+
 <body>
 
-<p>Redirecting to login…</p>
+<div class="panel">
+  <h2>Secure Authentication</h2>
+  <p>Redirecting to university sign-in portal…</p>
+</div>
 
 <script>
   const params = new URLSearchParams(window.location.search);
   const role = params.get("role");
 
   if (!role) {
-    alert("Role not specified");
     window.location.href = "index.html";
   }
 
