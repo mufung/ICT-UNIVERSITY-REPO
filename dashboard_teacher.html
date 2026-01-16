@@ -3,29 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <title>Teacher Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f5f4f1;
+      color: #0a2540;
+    }
+
+    header {
+      padding: 40px;
+      background: #0a2540;
+      color: white;
+    }
+
+    .content {
+      padding: 48px;
+    }
+
+    button {
+      margin-top: 24px;
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: none;
+      background: #dc2626;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Teacher Dashboard</h2>
+<header>
+  <h1>Teacher Dashboard</h1>
+</header>
 
-<button onclick="logout()">Logout</button>
+<div class="content">
+  <p>Manage results and academic workflows.</p>
+  <button onclick="logout()">Logout</button>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
   const token = localStorage.getItem("idToken");
-
-  if (!token) {
-    window.location.href = "index.html";
-  }
+  if (!token) window.location.href = "index.html";
 
   const user = jwt_decode(token);
   const groups = user["cognito:groups"] || [];
-
-  if (!groups.includes("Teachers")) {
-    alert("Access denied");
-    window.location.href = "index.html";
-  }
+  if (!groups.includes("Teachers")) window.location.href = "index.html";
 
   function logout() {
     localStorage.removeItem("idToken");
