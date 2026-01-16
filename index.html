@@ -1,55 +1,31 @@
  <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>ICT University Academic System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <title>Student Dashboard</title>
 
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(180deg, #0a2540, #020617);
-      color: white;
-    }
-    header {
-      padding: 80px 10%;
-    }
-    h1 {
-      font-size: 64px;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-    p {
-      max-width: 600px;
-      font-size: 18px;
-      opacity: 0.9;
-    }
-    .cta {
-      margin-top: 40px;
-    }
-    .cta a {
-      display: inline-block;
-      margin-right: 20px;
-      padding: 14px 32px;
-      border-radius: 40px;
-      text-decoration: none;
-      font-weight: 600;
-      color: white;
-    }
-    .signin {
-      background: #2563eb;
-    }
-    .register {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.4);
-    }
-    section {
-      padding: 120px 10%;
       background: #f5f4f1;
       color: #020617;
+    }
+    header {
+      padding: 40px;
+      background: #020617;
+      color: white;
+    }
+    section {
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 16px;
     }
   </style>
 </head>
@@ -57,19 +33,25 @@
 <body>
 
 <header>
-  <h1>ICT University Academic Portal</h1>
-  <p>A modern, secure academic platform for students and lecturers — built for the future of education.</p>
-
-  <div class="cta">
-    <a class="signin" href="signin.html">Sign In</a>
-    <a class="register" href="register.html">Register</a>
-  </div>
+  <h1>Student Dashboard</h1>
 </header>
 
 <section>
-  <h2>Why This Platform?</h2>
-  <p>Results management, secure authentication, department-based access, and scalable cloud infrastructure.</p>
+  <div class="card">
+    <strong>CSC301</strong><br>
+    Status: Pending
+  </div>
+  <div class="card">
+    <strong>MTH201</strong><br>
+    Status: Uploaded
+  </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+<script>
+  const token = localStorage.getItem("idToken");
+  if (!token) location.href = "signin.html";
+</script>
 
 </body>
 </html>
