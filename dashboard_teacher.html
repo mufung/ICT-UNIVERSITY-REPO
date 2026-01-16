@@ -30,5 +30,28 @@
     }
   </script>
 
+
+  <script>
+(function enforceAuth() {
+
+  const role = JSON.parse(sessionStorage.getItem("userRole"));
+
+  if (!role) {
+    window.location.replace("index.html");
+    return;
+  }
+
+  if (window.location.pathname.includes("teacher") && !role.includes("Teachers")) {
+    window.location.replace("index.html");
+  }
+
+  if (window.location.pathname.includes("student") && !role.includes("Students")) {
+    window.location.replace("index.html");
+  }
+
+})();
+</script>
+
+
 </body>
 </html>
