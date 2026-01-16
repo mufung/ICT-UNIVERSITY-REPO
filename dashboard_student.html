@@ -1,29 +1,52 @@
  <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Dashboard | ICT University</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/aws-amplify@5.0.0/dist/aws-amplify.min.js"></script>
+  <title>Student Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, sans-serif;
+      background: #020617;
+      color: white;
+    }
+    header {
+      padding: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .content {
+      padding: 30px;
+    }
+    .card {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <h1>ICTU Student Dashboard</h1>
-    <button id="signout-btn" class="btn small">Sign Out</button>
-  </nav>
 
-  <main class="fade-in">
-    <section class="dashboard-section">
-      <h2>Welcome, Student</h2>
-      <p>Here you can view results, request corrections, and monitor updates.</p>
-      <div class="actions">
-        <button class="btn">View Results</button>
-        <button class="btn">Request Correction</button>
-      </div>
-    </section>
-  </main>
+<header>
+  <h2>Student Dashboard</h2>
+</header>
 
-  <script src="app.js"></script>
+<div class="content">
+  <div class="card">
+    <h3>My Results</h3>
+    <p>View grades and corrections.</p>
+  </div>
+
+  <div class="card">
+    <h3>Teacher Feedback</h3>
+    <p>Read comments and improve.</p>
+  </div>
+
+  <div class="card">
+    <h3>Resubmissions</h3>
+    <p>Submit corrected work.</p>
+  </div>
+</div>
+
 </body>
 </html>
