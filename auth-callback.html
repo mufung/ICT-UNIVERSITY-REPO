@@ -1,34 +1,34 @@
  <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Signing in...</title>
 </head>
-
 <body>
-<p>Signing you in, please wait...</p>
+
+<p>Signing you in...</p>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 <script>
   const hash = window.location.hash.substring(1);
   const params = new URLSearchParams(hash);
-
   const idToken = params.get("id_token");
-  const accessToken = params.get("access_token");
 
   if (!idToken) {
     window.location.href = "index.html";
   }
 
   localStorage.setItem("idToken", idToken);
-  localStorage.setItem("accessToken", accessToken);
 
-  const role = localStorage.getItem("selectedRole");
+  const user = jwt_decode(idToken);
+  const groups = user["cognito:groups"] || [];
 
-  if (role === "teacher") {
+  if (groups.includes("Teachers")) {
     window.location.href = "dashboard_teacher.html";
   } else {
     window.location.href = "dashboard_student.html";
   }
 </script>
+
 </body>
 </html>
