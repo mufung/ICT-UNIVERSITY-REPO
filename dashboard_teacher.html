@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <title>Teacher Dashboard</title>
 
-  <!-- ✅ CORRECT AMPLIFY BUILD (GLOBAL Amplify EXISTS HERE) -->
-  <script src="https://unpkg.com/aws-amplify@4.3.27/dist/aws-amplify.min.js"></script>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,19 +33,20 @@
 <script>
   console.log("Page loaded");
 
-  // ✅ CONFIGURE AMPLIFY
-  Amplify.configure({
-    Auth: {
-      region: "us-west-1",
-      userPoolId: "us-west-1_mbnfq4DcV",
-      userPoolWebClientId: "7ugvqkgf7859oto4v5vgdjus"
-    }
-  });
-
   const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
 
+  // ✅ GET COGNITO ID TOKEN FROM LOCAL STORAGE
+  function getIdToken() {
+    for (let key in localStorage) {
+      if (key.includes("idToken")) {
+        return localStorage.getItem(key);
+      }
+    }
+    return null;
+  }
+
   document.getElementById("submitBtn").addEventListener("click", async () => {
-    alert("BUTTON CLICKED"); // 🔥 proves button works
+    alert("BUTTON CLICKED"); // proves button works
 
     const status = document.getElementById("status");
     const fileInput = document.getElementById("fileInput");
@@ -58,21 +56,19 @@
       return;
     }
 
+    const idToken = getIdToken();
+    if (!idToken) {
+      status.innerText = "Auth error ❌ Please sign in again.";
+      return;
+    }
+
     try {
-      status.innerText = "Getting session...";
-
-      // ✅ GET COGNITO SESSION
-      const session = await Amplify.Auth.currentSession();
-      const idToken = session.getIdToken().getJwtToken();
-
-      // ✅ READ FILE
       const file = fileInput.files[0];
       const text = await file.text();
       const jsonData = JSON.parse(text);
 
       status.innerText = "Uploading to API Gateway...";
 
-      // ✅ CALL API
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
