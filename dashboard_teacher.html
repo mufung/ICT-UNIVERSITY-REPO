@@ -1,23 +1,74 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Teacher Result Submission</title>
+  <meta charset="UTF-8" />
+  <title>Teacher Dashboard | Results Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 80px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    input[type="file"] {
+      padding: 12px;
+      width: 100%;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 14px;
+      width: 100%;
+      background: #111;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #777;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Teacher Result Submission</h2>
+<div class="container">
+  <h1>Upload Student Results (CSV)</h1>
 
-<form id="resultForm">
-  <input id="studentId" placeholder="Student ID" required />
-  <input id="courseCode" placeholder="Course Code" required />
-  <input id="score" placeholder="Score" required />
-  <input id="semester" placeholder="Semester (e.g. 2025/2026)" required />
-  <button type="submit">Submit Result</button>
-</form>
+  <input type="file" id="fileInput" accept=".csv" />
+  <button id="uploadBtn">Upload Results</button>
+
+  <p id="status"></p>
+</div>
 
 <script src="js/config.js"></script>
-<script src="js/teacher.js"></script>
+<script src="js/teacher_upload.js"></script>
 
 </body>
 </html>
