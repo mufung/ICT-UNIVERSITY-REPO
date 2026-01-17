@@ -6,23 +6,27 @@
 </head>
 <body>
 
-  <h1>Teacher Dashboard</h1>
+<h1>Teacher Dashboard</h1>
 
-  <form id="uploadForm">
-    <input type="text" id="studentId" placeholder="Student ID" required /><br><br>
-    <input type="text" id="courseCode" placeholder="Course Code" required /><br><br>
-    <input type="text" id="academicYear" placeholder="Academic Year" required /><br><br>
-    <input type="text" id="department" placeholder="Department" required /><br><br>
+<form id="uploadForm">
+  <input type="text" id="studentId" placeholder="Student ID" required /><br><br>
+  <input type="text" id="courseCode" placeholder="Course Code" required /><br><br>
+  <input type="text" id="academicYear" placeholder="Academic Year" required /><br><br>
+  <input type="text" id="department" placeholder="Department" required /><br><br>
 
-    <input type="file" id="fileInput" accept=".json" required /><br><br>
+  <input type="file" id="fileInput" accept=".json" required /><br><br>
 
-    <button type="submit">Submit Results</button>
-  </form>
+  <button type="submit">Submit Results</button>
+</form>
 
-  <p id="status"></p>
+<p id="status"></p>
 
 <script>
-const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
+/**
+ * ✅ CORRECT API ENDPOINT
+ * MUST MATCH: POST /results
+ */
+const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod/results";
 
 document.getElementById("uploadForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -31,16 +35,20 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
   status.innerText = "Uploading...";
 
   try {
-    // 🔐 GET TOKEN FROM LOCAL STORAGE (HOSTED UI LOGIN)
+    // 🔐 GET COGNITO ID TOKEN
     const idToken = localStorage.getItem("idToken");
-    if (!idToken) throw new Error("User not authenticated");
+    if (!idToken) {
+      throw new Error("User not authenticated (missing idToken)");
+    }
 
-    // 📂 READ JSON FILE PROPERLY
-    const file = document.getElementById("fileInput").files[0];
-    if (!file) throw new Error("No file selected");
+    // 📂 READ FILE
+    const fileInput = document.getElementById("fileInput");
+    if (!fileInput.files.length) {
+      throw new Error("No file selected");
+    }
 
-    const fileText = await file.text();
-    const resultsJson = JSON.parse(fileText); // 🔥 THIS WAS MISSING BEFORE
+    const fileText = await fileInput.files[0].text();
+    const resultsJson = JSON.parse(fileText);
 
     // 📦 BUILD PAYLOAD
     const payload = {
@@ -48,10 +56,10 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       courseCode: document.getElementById("courseCode").value,
       academicYear: document.getElementById("academicYear").value,
       department: document.getElementById("department").value,
-      results: JSON.stringify(resultsJson)
+      results: resultsJson
     };
 
-    // 🚀 SEND TO API GATEWAY
+    // 🚀 SEND REQUEST
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -61,10 +69,11 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       body: JSON.stringify(payload)
     });
 
-    const result = await response.json();
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message);
+      console.error("API ERROR RESPONSE:", data);
+      throw new Error(data.message || "API error");
     }
 
     status.innerText = "✅ Upload successful";
