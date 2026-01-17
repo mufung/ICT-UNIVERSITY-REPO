@@ -1,4 +1,4 @@
-const API_URL =
+ const API_URL =
   "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev/submit-result";
 
 function uploadResults() {
@@ -17,19 +17,17 @@ function uploadResults() {
     try {
       const response = await fetch(API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "text/plain"
-        },
+        headers: { "Content-Type": "text/plain" },
         body: reader.result
       });
 
-      const result = await response.json();
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Upload failed");
+        throw new Error(data.error || "Upload failed");
       }
 
-      statusDiv.innerText = "✅ Results uploaded successfully";
+      statusDiv.innerText = "✅ Upload successful";
     } catch (err) {
       statusDiv.innerText = "❌ " + err.message;
     }
