@@ -1,53 +1,64 @@
-import { Auth } from "https://cdn.jsdelivr.net/npm/aws-amplify@5.3.8/dist/aws-amplify.min.js";
-import awsconfig from "./config.js";
+// ================================
+// TEACHER RESULT SUBMISSION LOGIC
+// ================================
 
-const API_URL = awsconfig.apiEndpoint;
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("resultForm");
 
-// Make sure Amplify is configured
-import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@5.3.8/dist/aws-amplify.min.js";
-Amplify.configure(awsconfig);
-
-// Handle form submission
-document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const status = document.getElementById("status");
-  status.innerText = "Uploading...";
-
-  try {
-    // 🔐 GET REAL COGNITO TOKEN
-    const session = await Auth.currentSession();
-    const idToken = session.getIdToken().getJwtToken();
-
-    // 📦 COLLECT FORM DATA
-    const data = {
-      studentId: document.getElementById("studentId").value,
-      courseCode: document.getElementById("courseCode").value,
-      academicYear: document.getElementById("academicYear").value,
-      department: document.getElementById("department").value,
-      results: document.getElementById("results").value
-    };
-
-    // 🚀 SEND TO API GATEWAY
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${idToken}`
-      },
-      body: JSON.stringify(data)
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || "Upload failed");
+    if (!form) {
+        console.error("❌ resultForm not found");
+        return;
     }
 
-    status.innerText = "✅ Upload successful";
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-  } catch (error) {
-    console.error("UPLOAD ERROR:", error);
-    status.innerText = "❌ Upload failed (check console)";
-  }
+        // Collect values
+        const studentId = document.getElementById("studentId").value.trim();
+        const courseCode = document.getElementById("courseCode").value.trim();
+        const score = document.getElementById("score").value.trim();
+        const semester = document.getElementById("semester").value.trim();
+
+        if (!studentId || !courseCode || !score || !semester) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        const payload = {
+            action: "submitResult",
+            studentId,
+            courseCode,
+            score,
+            semester,
+            createdAt: new Date().toISOString()
+        };
+
+        try {
+            const response = await fetch(
+                window.APP_CONFIG.API_ENDPOINTS.teacherSubmitResult,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("❌ API Error:", data);
+                alert("Failed to save result");
+                return;
+            }
+
+            alert("✅ Result saved successfully");
+            form.reset();
+
+        } catch (err) {
+            console.error("❌ Network error:", err);
+            alert("Network error. Check console.");
+        }
+    });
 });
