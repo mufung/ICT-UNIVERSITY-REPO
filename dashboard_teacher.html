@@ -1,34 +1,35 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Teacher Dashboard</title>
+  <title>Teacher Dashboard – Upload Results</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f4f6f8;
+      padding: 40px;
+      background: #f5f6fa;
     }
     h2 {
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
-    input, button {
-      margin: 8px 0;
-      padding: 10px;
+    input[type="file"] {
+      margin-bottom: 20px;
+    }
+    button {
+      background: #1f6feb;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
       width: 100%;
       max-width: 400px;
     }
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
     button:hover {
-      background: #1e40af;
+      background: #155acb;
     }
     #status {
-      margin-top: 15px;
+      margin-top: 20px;
       font-weight: bold;
     }
   </style>
@@ -37,61 +38,55 @@
 
   <h2>Teacher Dashboard – Upload Results</h2>
 
-  <input type="file" id="fileInput" accept=".txt,.csv,.json" />
-
+  <input type="file" id="fileInput" />
+  <br />
   <button id="uploadBtn">Upload Results</button>
 
   <div id="status"></div>
 
   <script>
-    // 🔴 REPLACE THIS WITH YOUR API INVOKE URL
     const API_URL = "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev/submit-result";
 
-    async function uploadResults() {
+    document.getElementById("uploadBtn").addEventListener("click", async () => {
       const fileInput = document.getElementById("fileInput");
       const statusDiv = document.getElementById("status");
 
       if (!fileInput.files.length) {
-        statusDiv.innerText = "❌ Please select a file first.";
+        statusDiv.innerText = "❌ Please select a file first";
         return;
       }
 
       const file = fileInput.files[0];
       const reader = new FileReader();
 
-      reader.onload = async function () {
+      reader.onload = async () => {
         try {
-          const fileContent = reader.result;
-
           const response = await fetch(API_URL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              rawFile: fileContent
+              submissionId: Date.now().toString(),
+              fileName: file.name,
+              fileContent: reader.result
             })
           });
 
-          const result = await response.json();
+          const data = await response.json();
 
-          if (response.ok) {
-            statusDiv.innerText = "✅ Upload successful!";
-          } else {
-            statusDiv.innerText = "❌ Upload failed: " + result.message;
+          if (!response.ok) {
+            throw new Error(data.message || "Upload failed");
           }
 
-        } catch (err) {
-          statusDiv.innerText = "❌ Error: " + err.message;
+          statusDiv.innerText = "✅ Upload successful";
+        } catch (error) {
+          statusDiv.innerText = "❌ Upload failed: " + error.message;
         }
       };
 
       reader.readAsText(file);
-    }
-
-    // ✅ PROPER EVENT BINDING (NO INLINE ONCLICK)
-    document.getElementById("uploadBtn")
-      .addEventListener("click", uploadResults);
+    });
   </script>
 
 </body>
