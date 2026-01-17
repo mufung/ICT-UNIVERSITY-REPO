@@ -1,97 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Teacher Dashboard</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    #status {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
 </head>
 <body>
 
-<h1>Teacher Dashboard</h1>
+  <h1>Teacher Dashboard</h1>
 
-<input type="file" id="fileInput" accept=".json">
-<br><br>
-<button id="submitBtn">Submit Results</button>
+  <form id="uploadForm">
+    <input type="text" id="studentId" placeholder="Student ID" required /><br><br>
+    <input type="text" id="courseCode" placeholder="Course Code" required /><br><br>
+    <input type="text" id="academicYear" placeholder="Academic Year" required /><br><br>
+    <input type="text" id="department" placeholder="Department" required /><br><br>
 
-<div id="status"></div>
+    <input type="file" id="fileInput" accept=".json" required /><br><br>
+
+    <button type="submit">Submit Results</button>
+  </form>
+
+  <p id="status"></p>
 
 <script>
-  console.log("Page loaded");
+const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
 
-  const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod";
+document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  // ✅ GET COGNITO ID TOKEN FROM LOCAL STORAGE
-  function getIdToken() {
-    for (let key in localStorage) {
-      if (key.includes("idToken")) {
-        return localStorage.getItem(key);
-      }
+  const status = document.getElementById("status");
+  status.innerText = "Uploading...";
+
+  try {
+    // 🔐 GET TOKEN FROM LOCAL STORAGE (HOSTED UI LOGIN)
+    const idToken = localStorage.getItem("idToken");
+    if (!idToken) throw new Error("User not authenticated");
+
+    // 📂 READ JSON FILE PROPERLY
+    const file = document.getElementById("fileInput").files[0];
+    if (!file) throw new Error("No file selected");
+
+    const fileText = await file.text();
+    const resultsJson = JSON.parse(fileText); // 🔥 THIS WAS MISSING BEFORE
+
+    // 📦 BUILD PAYLOAD
+    const payload = {
+      studentId: document.getElementById("studentId").value,
+      courseCode: document.getElementById("courseCode").value,
+      academicYear: document.getElementById("academicYear").value,
+      department: document.getElementById("department").value,
+      results: JSON.stringify(resultsJson)
+    };
+
+    // 🚀 SEND TO API GATEWAY
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${idToken}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message);
     }
-    return null;
+
+    status.innerText = "✅ Upload successful";
+
+  } catch (err) {
+    console.error("UPLOAD ERROR:", err);
+    status.innerText = "❌ Upload failed (check console)";
   }
-
-  document.getElementById("submitBtn").addEventListener("click", async () => {
-    alert("BUTTON CLICKED"); // proves button works
-
-    const status = document.getElementById("status");
-    const fileInput = document.getElementById("fileInput");
-
-    if (!fileInput.files.length) {
-      status.innerText = "Please select a file ❌";
-      return;
-    }
-
-    const idToken = getIdToken();
-    if (!idToken) {
-      status.innerText = "Auth error ❌ Please sign in again.";
-      return;
-    }
-
-    try {
-      const file = fileInput.files[0];
-      const text = await file.text();
-      const jsonData = JSON.parse(text);
-
-      status.innerText = "Uploading to API Gateway...";
-
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": idToken
-        },
-        body: JSON.stringify(jsonData)
-      });
-
-      const result = await response.json();
-      console.log("API response:", result);
-
-      if (!response.ok) {
-        throw new Error(result.message || "Upload failed");
-      }
-
-      status.innerText = "Upload successful ✅";
-
-    } catch (err) {
-      console.error("UPLOAD ERROR:", err);
-      status.innerText = "Upload failed ❌ (check console)";
-    }
-  });
+});
 </script>
 
 </body>
