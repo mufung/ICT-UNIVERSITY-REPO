@@ -1,64 +1,37 @@
-// ================================
-// TEACHER RESULT SUBMISSION LOGIC
-// ================================
+document.getElementById("resultForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("resultForm");
+  const payload = {
+    studentId: document.getElementById("studentId").value,
+    courseCode: document.getElementById("courseCode").value,
+    score: document.getElementById("score").value,
+    semester: document.getElementById("semester").value
+  };
 
-    if (!form) {
-        console.error("❌ resultForm not found");
-        return;
+  try {
+    const response = await fetch(
+      `${config.API_BASE_URL}/submit-result`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Submission failed");
+      return;
     }
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    alert("Result submitted successfully");
+    document.getElementById("resultForm").reset();
 
-        // Collect values
-        const studentId = document.getElementById("studentId").value.trim();
-        const courseCode = document.getElementById("courseCode").value.trim();
-        const score = document.getElementById("score").value.trim();
-        const semester = document.getElementById("semester").value.trim();
-
-        if (!studentId || !courseCode || !score || !semester) {
-            alert("Please fill all fields");
-            return;
-        }
-
-        const payload = {
-            action: "submitResult",
-            studentId,
-            courseCode,
-            score,
-            semester,
-            createdAt: new Date().toISOString()
-        };
-
-        try {
-            const response = await fetch(
-                window.APP_CONFIG.API_ENDPOINTS.teacherSubmitResult,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(payload)
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                console.error("❌ API Error:", data);
-                alert("Failed to save result");
-                return;
-            }
-
-            alert("✅ Result saved successfully");
-            form.reset();
-
-        } catch (err) {
-            console.error("❌ Network error:", err);
-            alert("Network error. Check console.");
-        }
-    });
+  } catch (err) {
+    console.error(err);
+    alert("Network error. Check console.");
+  }
 });
