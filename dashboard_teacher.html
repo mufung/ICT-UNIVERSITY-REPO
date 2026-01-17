@@ -1,93 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Teacher Dashboard – Upload Results</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      background: #f5f6fa;
-    }
-    h2 {
-      margin-bottom: 20px;
-    }
-    input[type="file"] {
-      margin-bottom: 20px;
-    }
-    button {
-      background: #1f6feb;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-      max-width: 400px;
-    }
-    button:hover {
-      background: #155acb;
-    }
-    #status {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Teacher Result Submission</title>
 </head>
 <body>
 
-  <h2>Teacher Dashboard – Upload Results</h2>
+<h2>Teacher Result Submission</h2>
 
-  <input type="file" id="fileInput" />
-  <br />
-  <button id="uploadBtn">Upload Results</button>
+<form id="resultForm">
+  <input id="studentId" placeholder="Student ID" required />
+  <input id="courseCode" placeholder="Course Code" required />
+  <input id="score" placeholder="Score" required />
+  <input id="semester" placeholder="Semester (e.g. 2025/2026)" required />
+  <button type="submit">Submit Result</button>
+</form>
 
-  <div id="status"></div>
-
-  <script>
-    const API_URL = "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev/submit-result";
-
-    document.getElementById("uploadBtn").addEventListener("click", async () => {
-      const fileInput = document.getElementById("fileInput");
-      const statusDiv = document.getElementById("status");
-
-      if (!fileInput.files.length) {
-        statusDiv.innerText = "❌ Please select a file first";
-        return;
-      }
-
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-
-      reader.onload = async () => {
-        try {
-          const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              submissionId: Date.now().toString(),
-              fileName: file.name,
-              fileContent: reader.result
-            })
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.message || "Upload failed");
-          }
-
-          statusDiv.innerText = "✅ Upload successful";
-        } catch (error) {
-          statusDiv.innerText = "❌ Upload failed: " + error.message;
-        }
-      };
-
-      reader.readAsText(file);
-    });
-  </script>
+<script src="js/config.js"></script>
+<script src="js/teacher.js"></script>
 
 </body>
 </html>
