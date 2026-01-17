@@ -1,121 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Teacher Dashboard | ICI University</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ /**
+ * student.js
+ * Student Result Viewer
+ * Works with Amplify, Local PC, Lambda + API Gateway
+ */
 
-  <!-- Main Styles -->
-  <link rel="stylesheet" href="css/style.css" />
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("studentResultForm");
+  const resultContainer = document.getElementById("resultContainer");
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 0;
+  if (!form) {
+    console.error("❌ studentResultForm not found in HTML");
+    return;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const studentId = document.getElementById("studentId").value.trim();
+    const semester = document.getElementById("semester").value.trim();
+
+    if (!studentId || !semester) {
+      alert("Please fill all fields");
+      return;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 80px auto;
-      background: #ffffff;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    resultContainer.innerHTML = "Loading results...";
+
+    try {
+      const url =
+        `${window.APP_CONFIG.API_BASE_URL}` +
+        `?studentId=${encodeURIComponent(studentId)}` +
+        `&semester=${encodeURIComponent(semester)}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data || data.length === 0) {
+        resultContainer.innerHTML = "<p>No results found.</p>";
+        return;
+      }
+
+      renderResults(data);
+
+    } catch (error) {
+      console.error("❌ Error fetching results:", error);
+      resultContainer.innerHTML =
+        "<p style='color:red;'>Failed to load results.</p>";
     }
+  });
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #222;
-    }
+  function renderResults(results) {
+    let html = `
+      <table style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>Course Code</th>
+            <th>Score</th>
+            <th>Semester</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
 
-    form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+    results.forEach(item => {
+      html += `
+        <tr>
+          <td>${item.courseCode}</td>
+          <td>${item.score}</td>
+          <td>${item.semester}</td>
+        </tr>
+      `;
+    });
 
-    input {
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      width: 100%;
-    }
+    html += `
+        </tbody>
+      </table>
+    `;
 
-    button {
-      grid-column: span 2;
-      padding: 16px;
-      background: #111;
-      color: #fff;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #000;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 14px;
-      color: #777;
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="container">
-    <h1>Teacher Result Submission</h1>
-
-    <form id="resultForm">
-      <input
-        id="studentId"
-        type="text"
-        placeholder="Student ID"
-        required
-      />
-
-      <input
-        id="courseCode"
-        type="text"
-        placeholder="Course Code"
-        required
-      />
-
-      <input
-        id="score"
-        type="number"
-        placeholder="Score"
-        required
-      />
-
-      <input
-        id="semester"
-        type="text"
-        placeholder="Semester (e.g. 2025/2026)"
-        required
-      />
-
-      <button type="submit">Submit Result</button>
-    </form>
-
-    <footer>
-      © 2026 ICI University — Teacher Portal
-    </footer>
-  </div>
-
-  <!-- Config MUST load first -->
-  <script src="js/config.js"></script>
-
-  <!-- Teacher logic -->
-  <script src="js/teacher.js"></script>
-
-</body>
-</html>
+    resultContainer.innerHTML = html;
+  }
+});
