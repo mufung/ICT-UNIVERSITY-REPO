@@ -1,89 +1,96 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Teacher Dashboard</title>
+  <title>Teacher Dashboard – Upload Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 40px;
+    }
+    .card {
+      background: white;
+      padding: 25px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 12px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Teacher Dashboard</h1>
+  <div class="card">
+    <h2>Upload Student Results</h2>
 
-<form id="uploadForm">
-  <input type="text" id="studentId" placeholder="Student ID" required /><br><br>
-  <input type="text" id="courseCode" placeholder="Course Code" required /><br><br>
-  <input type="text" id="academicYear" placeholder="Academic Year" required /><br><br>
-  <input type="text" id="department" placeholder="Department" required /><br><br>
+    <input type="file" id="fileInput" accept=".json" />
+    <button id="submitBtn">Submit Results</button>
 
-  <input type="file" id="fileInput" accept=".json" required /><br><br>
+    <p id="status"></p>
+  </div>
 
-  <button type="submit">Submit Results</button>
-</form>
+  <script>
+    const API_URL = "https://2iqbkiuwga.execute-api.us-west-1.amazonaws.com/prod/results";
 
-<p id="status"></p>
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const status = document.getElementById("status");
+      const fileInput = document.getElementById("fileInput");
 
-<script>
-/**
- * ✅ CORRECT API ENDPOINT
- * MUST MATCH: POST /results
- */
-const API_URL = "https://evqtbna09d.execute-api.us-west-1.amazonaws.com/prod/results";
+      if (!fileInput.files.length) {
+        status.innerText = "❌ Please select a JSON file";
+        return;
+      }
 
-document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+      try {
+        status.innerText = "⏳ Uploading...";
 
-  const status = document.getElementById("status");
-  status.innerText = "Uploading...";
+        const fileText = await fileInput.files[0].text();
+        const data = JSON.parse(fileText);
 
-  try {
-    // 🔐 GET COGNITO ID TOKEN
-    const idToken = localStorage.getItem("idToken");
-    if (!idToken) {
-      throw new Error("User not authenticated (missing idToken)");
-    }
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
 
-    // 📂 READ FILE
-    const fileInput = document.getElementById("fileInput");
-    if (!fileInput.files.length) {
-      throw new Error("No file selected");
-    }
+        const result = await response.json();
 
-    const fileText = await fileInput.files[0].text();
-    const resultsJson = JSON.parse(fileText);
+        if (!response.ok) {
+          throw new Error(result.message || "Upload failed");
+        }
 
-    // 📦 BUILD PAYLOAD
-    const payload = {
-      studentId: document.getElementById("studentId").value,
-      courseCode: document.getElementById("courseCode").value,
-      academicYear: document.getElementById("academicYear").value,
-      department: document.getElementById("department").value,
-      results: resultsJson
-    };
-
-    // 🚀 SEND REQUEST
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${idToken}`
-      },
-      body: JSON.stringify(payload)
+        status.innerText = "✅ Results uploaded successfully";
+      } catch (err) {
+        console.error(err);
+        status.innerText = "❌ Upload failed (check console)";
+      }
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("API ERROR RESPONSE:", data);
-      throw new Error(data.message || "API error");
-    }
-
-    status.innerText = "✅ Upload successful";
-
-  } catch (err) {
-    console.error("UPLOAD ERROR:", err);
-    status.innerText = "❌ Upload failed (check console)";
-  }
-});
-</script>
+  </script>
 
 </body>
 </html>
