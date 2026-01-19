@@ -1,73 +1,41 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Student Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="styles.css" />
-
-  <style>
-    .dashboard-section {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 16px;
-      backdrop-filter: blur(12px);
-      background: rgba(255, 255, 255, 0.75);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-    }
-
-    .result-card {
-      background: #f4f6f8;
-      padding: 16px;
-      border-radius: 10px;
-      margin-bottom: 14px;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-    }
-  </style>
+  <!-- Keep your existing styles -->
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-<main class="dashboard-section">
-  <h2>Your Results</h2>
+  <h2>Student Result Portal</h2>
 
-  <div class="result-card">
-    <strong>CSC301</strong><br />
-    Score: Pending
+  <!-- Student Result Form -->
+  <div class="form-container">
+
+    <label>Student ID</label>
+    <input type="text" id="studentId" placeholder="e.g. STU001" />
+
+    <label>Course Code</label>
+    <input type="text" id="courseCode" placeholder="e.g. CSC101" />
+
+    <label>Semester</label>
+    <input type="text" id="semester" placeholder="e.g. 2024-1" />
+
+    <button id="getResultBtn">Get Result</button>
+
   </div>
 
-  <div class="result-card">
-    <strong>MTH201</strong><br />
-    Score: Pending
+  <!-- Result Output -->
+  <div id="resultSection">
+    <h3>Result</h3>
+    <div id="resultOutput"></div>
   </div>
 
-  <h3>GPA Projection</h3>
-  <p>Estimated GPA: — (AI prediction pending)</p>
-
-  <h3>Submit Complaint / Appeal</h3>
-  <form id="appealForm">
-    <textarea placeholder="Explain your concern..." required></textarea>
-    <input type="file" accept=".pdf,.jpg,.png" />
-    <button type="submit">Submit Appeal</button>
-    <p id="appealStatus"></p>
-  </form>
-</main>
-
-<script>
-document.getElementById("appealForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const s = document.getElementById("appealStatus");
-  s.textContent = "Appeal submitted. Awaiting review.";
-  s.style.color = "green";
-});
-</script>
+  <!-- Scripts (EMPTY FOR NOW) -->
+  <script src="config.js"></script>
+  <script src="student.js"></script>
 
 </body>
 </html>
