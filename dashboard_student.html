@@ -121,6 +121,130 @@
     </div>
 </div>
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Result Portal</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* RESULT CARD */
+        .result-card {
+            display: none;
+            margin-top: 40px;
+            border-top: 2px solid #333;
+            padding-top: 20px;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background: #f0f0f0;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background: #fafafa;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Student Result Portal</h1>
+
+    <div class="form-group">
+        <input type="text" id="studentId" placeholder="Student ID (e.g. STU001)">
+        <input type="text" id="courseCode" placeholder="Course Code (e.g. CSC101)">
+        <input type="text" id="semester" placeholder="Semester (e.g. 2024-1)">
+        <button onclick="getResult()">Get Result</button>
+    </div>
+
+    <div class="result-card" id="resultCard">
+        <div class="student-info">
+            <div id="studentName">Student: —</div>
+            <div id="studentSemester">Semester: —</div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject Code</th>
+                    <th>Subject Name</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody id="resultTable">
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="2">Total</td>
+                    <td id="totalMarks">—</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
 <script>
     function getResult() {
         // TEMPORARY MOCK DATA (Step 3A only)
@@ -148,6 +272,11 @@
         document.getElementById("totalMarks").innerText = "163";
     }
 </script>
+
+</body>
+</html>
+
+    
 
 </body>
 </html>
