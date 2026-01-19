@@ -1,37 +1,61 @@
-document.getElementById("resultForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.getElementById("uploadBtn").addEventListener("click", async () => {
+  const fileInput = document.getElementById("resultFile");
+  const status = document.getElementById("status");
 
-  const payload = {
-    studentId: document.getElementById("studentId").value,
-    courseCode: document.getElementById("courseCode").value,
-    score: document.getElementById("score").value,
-    semester: document.getElementById("semester").value
+  if (!fileInput.files.length) {
+    status.innerText = "❌ Please select a CSV file.";
+    return;
+  }
+
+  const file = fileInput.files[0];
+
+  if (!file.name.endsWith(".csv")) {
+    status.innerText = "❌ Only CSV files are allowed.";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    const text = e.target.result;
+    const rows = text.trim().split("\n");
+
+    // Remove header row
+    rows.shift();
+
+    const results = rows.map(row => {
+      const [studentId, courseCode, score, semester] = row.split(",");
+
+      return {
+        studentId: studentId.trim(),
+        courseCode: courseCode.trim(),
+        score: Number(score.trim()),
+        semester: semester.trim()
+      };
+    });
+
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/submit-result`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ results })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        status.innerText = "❌ Upload failed.";
+        console.error(data);
+        return;
+      }
+
+      status.innerText = "✅ Results uploaded successfully.";
+
+    } catch (err) {
+      console.error(err);
+      status.innerText = "❌ Network or server error.";
+    }
   };
 
-  try {
-    const response = await fetch(
-      `${config.API_BASE_URL}/submit-result`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.error || "Submission failed");
-      return;
-    }
-
-    alert("Result submitted successfully");
-    document.getElementById("resultForm").reset();
-
-  } catch (err) {
-    console.error(err);
-    alert("Network error. Check console.");
-  }
+  reader.readAsText(file);
 });
