@@ -1,4 +1,4 @@
-document.getElementById("resultForm").addEventListener("submit", async (e) => {
+ document.getElementById("resultForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const courseCode = document.getElementById("courseCode").value.trim();
@@ -6,16 +6,11 @@ document.getElementById("resultForm").addEventListener("submit", async (e) => {
   const studentId = document.getElementById("studentId").value.trim();
   const score = Number(document.getElementById("score").value);
 
-  // Build payload EXACTLY how Lambda expects it
   const payload = {
+    studentId,
     courseCode,
     semester,
-    results: [
-      {
-        studentId,
-        score
-      }
-    ]
+    score
   };
 
   try {
