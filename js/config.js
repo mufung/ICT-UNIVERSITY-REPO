@@ -1,4 +1,4 @@
-const config = {
-  studentResultsApi: "https://dxc2imd746.execute-api.us-west-1.amazonaws.com/prod/student/results",
-  teacherUploadApi: "https://dxc2imd746.execute-api.us-west-1.amazonaws.com/prod/teacher/results"
+const CONFIG = {
+  TEACHER_API_URL: "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev/submit-result",
+  STUDENT_API_URL: "https://<YOUR-STUDENT-API-ID>.execute-api.us-west-1.amazonaws.com/get-results"
 };
