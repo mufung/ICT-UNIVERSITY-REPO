@@ -1,41 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Student Dashboard</title>
+<!-- Result Card Container -->
+<div id="resultCard" style="display:none; margin-top:30px; border:1px solid #ccc; padding:20px; max-width:700px;">
+  
+  <h2 style="text-align:center;">Student Result Sheet</h2>
 
-  <!-- Keep your existing styles -->
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <h2>Student Result Portal</h2>
-
-  <!-- Student Result Form -->
-  <div class="form-container">
-
-    <label>Student ID</label>
-    <input type="text" id="studentId" placeholder="e.g. STU001" />
-
-    <label>Course Code</label>
-    <input type="text" id="courseCode" placeholder="e.g. CSC101" />
-
-    <label>Semester</label>
-    <input type="text" id="semester" placeholder="e.g. 2024-1" />
-
-    <button id="getResultBtn">Get Result</button>
-
+  <!-- Student Info -->
+  <div id="studentInfo" style="margin-bottom:20px;">
+    <p><strong>Student ID:</strong> <span id="rStudentId"></span></p>
+    <p><strong>Course Code:</strong> <span id="rCourseCode"></span></p>
+    <p><strong>Semester:</strong> <span id="rSemester"></span></p>
   </div>
 
-  <!-- Result Output -->
-  <div id="resultSection">
-    <h3>Result</h3>
-    <div id="resultOutput"></div>
+  <!-- Result Table -->
+  <table border="1" width="100%" cellpadding="8" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Marks</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody id="resultTableBody">
+      <!-- Filled dynamically -->
+    </tbody>
+  </table>
+
+  <!-- Summary -->
+  <div id="resultSummary" style="margin-top:20px;">
+    <p><strong>Total Marks:</strong> <span id="rTotal"></span></p>
+    <p><strong>Remark:</strong> <span id="rRemark"></span></p>
   </div>
 
-  <!-- Scripts (EMPTY FOR NOW) -->
-  <script src="config.js"></script>
-  <script src="student.js"></script>
-
-</body>
-</html>
+</div>
