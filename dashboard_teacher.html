@@ -1,15 +1,10 @@
-<h2>Upload Student Result</h2>
+ <h2>Upload Student Results</h2>
 
-<form id="resultForm">
-  <input type="text" id="studentId" placeholder="Student ID" required />
-  <input type="text" id="courseCode" placeholder="Course Code" required />
-  <input type="text" id="courseTitle" placeholder="Course Title" required />
-  <input type="number" id="ca" placeholder="CA Marks" required />
-  <input type="number" id="exam" placeholder="Exam Marks" required />
-  <button type="submit">Upload Result</button>
-</form>
+<input type="file" id="resultFile" accept=".csv" />
+<br><br>
 
-<p id="message"></p>
+<button id="uploadBtn">Upload Results</button>
 
-<script src="js/config.js"></script>
-<script src="js/teacher.js"></script>
+<p id="status"></p>
+
+<script src="teacher.js"></script>
