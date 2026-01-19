@@ -1,21 +1,28 @@
-document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+const uploadBtn = document.getElementById("uploadBtn");
+const fileInput = document.getElementById("resultFile");
+const status = document.getElementById("status");
 
-  const data = {
-    studentId: document.getElementById("studentId").value,
-    courseCode: document.getElementById("courseCode").value,
-    semester: document.getElementById("semester").value,
-    department: document.getElementById("department").value,
-    score: Number(document.getElementById("score").value),
-    grade: document.getElementById("grade").value
-  };
+uploadBtn.addEventListener("click", async () => {
+  if (!fileInput.files.length) {
+    status.innerText = "Please select a CSV file";
+    return;
+  }
 
-  const res = await fetch(CONFIG.TEACHER_API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+  const file = fileInput.files[0];
+  const text = await file.text();
 
-  const result = await res.json();
-  alert(result.message || "Uploaded");
+  const response = await fetch(
+    "https://YOUR_API_ID.execute-api.us-west-1.amazonaws.com/prod/teacher-upload",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/csv",
+        "Authorization": localStorage.getItem("idToken")
+      },
+      body: text
+    }
+  );
+
+  const data = await response.json();
+  status.innerText = data.message || "Upload completed";
 });
