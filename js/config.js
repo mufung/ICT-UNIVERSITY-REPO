@@ -1,3 +1,4 @@
 const config = {
-  API_BASE_URL: "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev"
+  studentResultsApi: "https://dxc2imd746.execute-api.us-west-1.amazonaws.com/prod/student/results",
+  teacherUploadApi: "https://dxc2imd746.execute-api.us-west-1.amazonaws.com/prod/teacher/results"
 };
