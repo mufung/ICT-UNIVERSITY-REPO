@@ -1,52 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Teacher Dashboard – Upload Results</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
-<body>
+<h2>Upload Student Result</h2>
 
-  <h2>Teacher Result Submission (Manual)</h2>
+<form id="resultForm">
+  <input type="text" id="studentId" placeholder="Student ID" required />
+  <input type="text" id="courseCode" placeholder="Course Code" required />
+  <input type="text" id="courseTitle" placeholder="Course Title" required />
+  <input type="number" id="ca" placeholder="CA Marks" required />
+  <input type="number" id="exam" placeholder="Exam Marks" required />
+  <button type="submit">Upload Result</button>
+</form>
 
-  <form id="resultForm">
-    <label>
-      Course Code:
-      <input type="text" id="courseCode" required />
-    </label>
-    <br /><br />
+<p id="message"></p>
 
-    <label>
-      Semester:
-      <input type="text" id="semester" placeholder="2025-2026 First" required />
-    </label>
-    <br /><br />
-
-    <label>
-      Student ID:
-      <input type="text" id="studentId" required />
-    </label>
-    <br /><br />
-
-    <label>
-      Score:
-      <input type="number" id="score" min="0" max="100" required />
-    </label>
-    <br /><br />
-
-    <button type="submit">Submit Result</button>
-  </form>
-
-  <hr /><br />
-
-  <h2>Upload Results From PC (CSV)</h2>
-
-  <input type="file" id="csvFile" accept=".csv" />
-  <br /><br />
-  <button id="uploadCsvBtn">Upload CSV Results</button>
-
-  <script src="js/config.js"></script>
-  <script src="js/teacher.js"></script>
-
-</body>
-</html>
+<script src="js/config.js"></script>
+<script src="js/teacher.js"></script>
