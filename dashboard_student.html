@@ -87,158 +87,33 @@
     <h1>Student Result Portal</h1>
 
     <div class="form-group">
-        <input type="text" id="studentId" placeholder="Student ID (e.g. STU001)">
-        <input type="text" id="courseCode" placeholder="Course Code (e.g. CSC101)">
-        <input type="text" id="semester" placeholder="Semester (e.g. 2024-1)">
+        <input type="text" id="studentId" placeholder="Student ID (e.g STU001)">
+        <input type="text" id="courseCode" placeholder="Course Code (e.g CSC101)">
+        <input type="text" id="semester" placeholder="Semester (e.g 2024-1)">
         <button onclick="getResult()">Get Result</button>
     </div>
 
     <div class="result-card" id="resultCard">
         <div class="student-info">
-            <div id="studentName">Student: —</div>
-            <div id="studentSemester">Semester: —</div>
+            <div id="studentName"></div>
+            <div id="studentSemester"></div>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th>Subject Code</th>
-                    <th>Subject Name</th>
+                    <th>Course Code</th>
+                    <th>Course Name</th>
                     <th>Marks</th>
                     <th>Grade</th>
                 </tr>
             </thead>
-            <tbody id="resultTable">
-            </tbody>
+            <tbody id="resultTable"></tbody>
             <tfoot>
                 <tr class="total-row">
                     <td colspan="2">Total</td>
-                    <td id="totalMarks">—</td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-</div>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student Result Portal</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .form-group input {
-            flex: 1;
-            padding: 10px;
-            font-size: 14px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        /* RESULT CARD */
-        .result-card {
-            display: none;
-            margin-top: 40px;
-            border-top: 2px solid #333;
-            padding-top: 20px;
-        }
-
-        .student-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th, table td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-
-        table th {
-            background: #f0f0f0;
-        }
-
-        .total-row {
-            font-weight: bold;
-            background: #fafafa;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-    <h1>Student Result Portal</h1>
-
-    <div class="form-group">
-        <input type="text" id="studentId" placeholder="Student ID (e.g. STU001)">
-        <input type="text" id="courseCode" placeholder="Course Code (e.g. CSC101)">
-        <input type="text" id="semester" placeholder="Semester (e.g. 2024-1)">
-        <button onclick="getResult()">Get Result</button>
-    </div>
-
-    <div class="result-card" id="resultCard">
-        <div class="student-info">
-            <div id="studentName">Student: —</div>
-            <div id="studentSemester">Semester: —</div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Subject Code</th>
-                    <th>Subject Name</th>
-                    <th>Marks</th>
-                    <th>Grade</th>
-                </tr>
-            </thead>
-            <tbody id="resultTable">
-            </tbody>
-            <tfoot>
-                <tr class="total-row">
-                    <td colspan="2">Total</td>
-                    <td id="totalMarks">—</td>
-                    <td></td>
+                    <td id="totalMarks"></td>
+                    <td>-</td>
                 </tr>
             </tfoot>
         </table>
@@ -246,37 +121,65 @@
 </div>
 
 <script>
-    function getResult() {
-        // TEMPORARY MOCK DATA (Step 3A only)
-        document.getElementById("resultCard").style.display = "block";
+async function getResult() {
+    const studentId = document.getElementById("studentId").value.trim();
+    const courseCode = document.getElementById("courseCode").value.trim();
+    const semester = document.getElementById("semester").value.trim();
 
-        document.getElementById("studentName").innerText = "Student: John Doe";
-        document.getElementById("studentSemester").innerText = "Semester: 2024-1";
+    if (!studentId || !courseCode || !semester) {
+        alert("Please fill in all fields");
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            "https://8zaokxj8.execute-api.us-west-1.amazonaws.com/prod/student/results" +
+            `?studentId=${encodeURIComponent(studentId)}` +
+            `&courseCode=${encodeURIComponent(courseCode)}` +
+            `&semester=${encodeURIComponent(semester)}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Request failed");
+        }
+
+        const data = await response.json();
+
+        if (!data.results || data.results.length === 0) {
+            alert("No results found");
+            return;
+        }
+
+        document.getElementById("resultCard").style.display = "block";
+        document.getElementById("studentName").innerText = "Student ID: " + studentId;
+        document.getElementById("studentSemester").innerText = "Semester: " + semester;
 
         const table = document.getElementById("resultTable");
-        table.innerHTML = `
-            <tr>
-                <td>CSC101</td>
-                <td>Introduction to Computing</td>
-                <td>85</td>
-                <td>A</td>
-            </tr>
-            <tr>
-                <td>MTH102</td>
-                <td>Discrete Mathematics</td>
-                <td>78</td>
-                <td>B</td>
-            </tr>
-        `;
+        table.innerHTML = "";
 
-        document.getElementById("totalMarks").innerText = "163";
+        let total = 0;
+
+        data.results.forEach(item => {
+            total += Number(item.marks);
+
+            table.innerHTML += `
+                <tr>
+                    <td>${item.courseCode}</td>
+                    <td>${item.courseName}</td>
+                    <td>${item.marks}</td>
+                    <td>${item.grade}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("totalMarks").innerText = total;
+
+    } catch (error) {
+        console.error(error);
+        alert("Unable to fetch results");
     }
+}
 </script>
-
-</body>
-</html>
-
-    
 
 </body>
 </html>
