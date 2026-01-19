@@ -1,106 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Teacher Result Upload</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      background: #f5f7fa;
-    }
-    h2 {
-      margin-bottom: 10px;
-    }
-    input, button {
-      padding: 10px;
-      margin-top: 10px;
-      display: block;
-    }
-    button {
-      cursor: pointer;
-    }
-    #status {
-      margin-top: 20px;
-      white-space: pre-line;
-      font-size: 14px;
-    }
-  </style>
 </head>
 <body>
 
-<h2>Teacher Result CSV Upload</h2>
+<h2>Upload Student Results (CSV)</h2>
 
-<input type="file" id="csvFile" accept=".csv" />
-<button onclick="uploadCSV()">Upload Results</button>
+<input type="file" id="resultFile" accept=".csv" />
+<br><br>
 
-<div id="status"></div>
+<button id="uploadBtn">Upload Results</button>
 
-<script>
-const API_URL = "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev/submit-result";
+<p id="status"></p>
 
-function uploadCSV() {
-  const fileInput = document.getElementById("csvFile");
-  const statusDiv = document.getElementById("status");
-
-  if (!fileInput.files.length) {
-    alert("Please select a CSV file");
-    return;
-  }
-
-  const file = fileInput.files[0];
-  const reader = new FileReader();
-
-  reader.onload = async (e) => {
-    const text = e.target.result.trim();
-    const lines = text.split("\n");
-
-    const headers = lines[0].split(",").map(h => h.trim());
-
-    const requiredHeaders = ["studentId", "courseCode", "score", "semester"];
-    if (headers.join() !== requiredHeaders.join()) {
-      alert("CSV header order is invalid");
-      return;
-    }
-
-    statusDiv.textContent = "Uploading results...\n";
-
-    for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(",").map(v => v.trim());
-
-      const payload = {
-        studentId: values[0],
-        courseCode: values[1],
-        score: Number(values[2]),
-        semester: values[3]
-      };
-
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          statusDiv.textContent += `❌ Failed row ${i}: ${JSON.stringify(data)}\n`;
-        } else {
-          statusDiv.textContent += `✅ Uploaded row ${i}\n`;
-        }
-
-      } catch (err) {
-        statusDiv.textContent += `❌ Network error row ${i}\n`;
-      }
-    }
-
-    statusDiv.textContent += "\nUpload complete.";
-  };
-
-  reader.readAsText(file);
-}
-</script>
+<script src="js/config.js"></script>
+<script src="js/teacher.js"></script>
 
 </body>
 </html>
