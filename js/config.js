@@ -1,3 +1,3 @@
- const CONFIG = {
-  TEACHER_API_URL: "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev/submit-result"
+window.config = {
+  API_BASE_URL: "https://7qpx0ptfwg.execute-api.us-west-1.amazonaws.com/dev"
 };
