@@ -1,6 +1,7 @@
  <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>Student Dashboard</title>
 </head>
 <body>
@@ -8,25 +9,20 @@
 <h2>View Results</h2>
 
 <form id="studentResultForm">
-  <input type="text" id="studentId" placeholder="Student ID" required />
-  <input type="text" id="semester" placeholder="Semester (optional)" />
-  <button type="submit">Search</button>
+  <input
+    type="text"
+    id="studentId"
+    placeholder="Enter Student ID"
+    required
+  />
+  <button type="submit">View Results</button>
 </form>
 
-<br />
+<hr />
 
-<table id="resultsTable" border="1" style="display:none;">
-  <thead>
-    <tr>
-      <th>Course Code</th>
-      <th>Score</th>
-      <th>Semester</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody id="resultsBody"></tbody>
-</table>
+<pre id="resultsOutput"></pre>
 
+<!-- ORDER IS IMPORTANT -->
 <script src="js/config.js"></script>
 <script src="js/student.js"></script>
 
