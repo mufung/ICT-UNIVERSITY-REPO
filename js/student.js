@@ -1,69 +1,42 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("studentResultForm");
-  if (form) {
-    form.addEventListener("submit", handleStudentSearch);
-  }
-});
+document
+  .getElementById("studentResultForm")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-async function handleStudentSearch(event) {
-  event.preventDefault();
+    const studentId = document.getElementById("studentId").value.trim();
+    const output = document.getElementById("resultsOutput");
 
-  const studentId = document.getElementById("studentId").value.trim();
-  const semester = document.getElementById("semester").value.trim();
+    output.textContent = "Loading results...";
 
-  if (!studentId) {
-    alert("Student ID is required");
-    return;
-  }
+    try {
+      const url =
+        `${window.config.API_INVOKE_URL}` +
+        `${window.config.ENDPOINTS.STUDENT_RESULTS}` +
+        `?studentId=${encodeURIComponent(studentId)}`;
 
-  let query = `?studentId=${encodeURIComponent(studentId)}`;
-  if (semester) {
-    query += `&semester=${encodeURIComponent(semester)}`;
-  }
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
 
-  const url =
-    window.config.API_INVOKE_URL +
-    window.config.ENDPOINTS.STUDENT_RESULTS +
-    query;
+      const data = await response.json();
 
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
+      if (!response.ok) {
+        output.textContent = data.error || "Failed to retrieve results.";
+        return;
+      }
 
-    if (!response.ok) {
-      alert(data.message || "Failed to load results");
-      return;
+      if (!data.results || data.results.length === 0) {
+        output.textContent = "No results found.";
+        return;
+      }
+
+      output.textContent = JSON.stringify(data, null, 2);
+
+    } catch (err) {
+      console.error(err);
+      output.textContent = "Network error. Check console.";
     }
-
-    displayResults(data.results);
-  } catch (error) {
-    console.error("Student fetch error:", error);
-    alert("Network error");
-  }
-}
-
-function displayResults(results) {
-  const tbody = document.getElementById("resultsBody");
-  const table = document.getElementById("resultsTable");
-
-  tbody.innerHTML = "";
-
-  if (!results || results.length === 0) {
-    alert("No results found");
-    table.style.display = "none";
-    return;
-  }
-
-  results.forEach((item) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${item.courseCode}</td>
-      <td>${item.score}</td>
-      <td>${item.semester}</td>
-      <td>${item.createdAt || "-"}</td>
-    `;
-    tbody.appendChild(row);
   });
-
-  table.style.display = "table";
-}
