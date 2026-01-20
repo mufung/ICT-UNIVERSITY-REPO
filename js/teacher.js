@@ -1,4 +1,4 @@
-document.getElementById("resultForm").addEventListener("submit", async (e) => {
+ document.getElementById("resultForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const payload = {
@@ -10,7 +10,7 @@ document.getElementById("resultForm").addEventListener("submit", async (e) => {
 
   try {
     const response = await fetch(
-      `${config.API_BASE_URL}/submit-result`,
+      `${window.config.API_BASE_URL}/submit-result`,
       {
         method: "POST",
         headers: {
