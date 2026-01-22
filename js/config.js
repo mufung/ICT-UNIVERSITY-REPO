@@ -1,4 +1,4 @@
- const config = {
+const config = {
     cognito: {
         region: "us-west-1",
         userPoolId: "us-west-1_mbnfq4DcV",
