@@ -1,53 +1,57 @@
 import config from './config.js';
 
-// --- Handle Manual Typing ---
-document.getElementById("resultForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const payload = {
-    studentId: document.getElementById("studentId").value.trim(),
-    courseCode: document.getElementById("courseCode").value.trim(),
-    score: Number(document.getElementById("score").value.trim()),
-    semester: document.getElementById("semester").value.trim()
-  };
-  await sendToAPI(payload);
-});
-
-// --- Handle Multi-Student File Upload ---
-document.getElementById("uploadBtn").addEventListener("click", () => {
-  const file = document.getElementById('fileInput').files[0];
-  if (!file) return alert("Please select your teacher.txt file first!");
-
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const lines = e.target.result.split('\n');
+// 1. Function to handle the Bulk Upload
+async function uploadResults(resultsArray) {
+    const token = localStorage.getItem('userToken'); // Retrieve the Cognito Token
     
-    for (let line of lines) {
-      if (line.trim() === "") continue;
-      
-      // Parsing the "key: value, key: value" format
-      const parts = line.split(',');
-      const payload = {};
-      parts.forEach(part => {
-        const [key, value] = part.split(':').map(s => s.trim());
-        payload[key] = key === 'score' ? Number(value) : value;
-      });
-
-      await sendToAPI(payload);
+    if (!token) {
+        alert("Session expired. Please log in again.");
+        return;
     }
-    alert("Batch Upload Finished! Check DynamoDB.");
-  };
-  reader.readAsText(file);
-});
 
-async function sendToAPI(payload) {
-  try {
-    const response = await fetch(`${config.api.baseUrl}/submit-result`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    console.log(`Uploaded ${payload.studentId}`);
-  } catch (err) {
-    console.error("Error uploading:", payload.studentId);
-  }
+    try {
+        const response = await fetch(`${config.api.baseUrl}/submit-result`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token // THE SECURITY TOKEN
+            },
+            body: JSON.stringify({
+                results: resultsArray // Sending multiple students at once
+            })
+        });
+
+        if (response.ok) {
+            alert("Bulk Upload Successful!");
+        } else {
+            const error = await response.json();
+            alert("Upload Failed: " + error.message);
+        }
+    } catch (err) {
+        console.error("Network Error:", err);
+    }
 }
+
+// 2. Logic to read the text file you created earlier
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const text = event.target.result;
+        const lines = text.split('\n');
+        const results = lines.map(line => {
+            // Logic to parse your teacher.txt format: "studentId: XXX, score: YYY..."
+            const parts = line.split(',');
+            return {
+                studentId: parts[0].split(': ')[1],
+                courseCode: parts[1].split(': ')[1],
+                score: parts[2].split(': ')[1],
+                semester: parts[3].split(': ')[1]
+            };
+        });
+        
+        uploadResults(results);
+    };
+    reader.readAsText(file);
+});
