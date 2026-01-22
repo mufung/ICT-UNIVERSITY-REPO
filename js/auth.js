@@ -1,11 +1,11 @@
- import config from './config.js';
+import config from './config.js';
 
 export async function loginUser(email, password) {
-    // FIX: Explicitly reference the library from the window object
-    const CognitoSDK = window.AmazonCognitoIdentity;
-    
-    if (!CognitoSDK) {
-        throw new Error("Cognito SDK not loaded. Please refresh the page.");
+    // FORCE the code to look at the global window for the library
+    const Cognito = window.AmazonCognitoIdentity;
+
+    if (!Cognito) {
+        throw new Error("Cognito Library not found! Check your internet or signin.html script tag.");
     }
 
     const poolData = { 
@@ -13,22 +13,16 @@ export async function loginUser(email, password) {
         ClientId: config.cognito.clientId 
     };
     
-    const userPool = new CognitoSDK.CognitoUserPool(poolData);
-    const authDetails = new CognitoSDK.AuthenticationDetails({ 
-        Username: email, 
-        Password: password 
-    });
-    const cognitoUser = new CognitoSDK.CognitoUser({ 
-        Username: email, 
-        Pool: userPool 
-    });
+    const userPool = new Cognito.CognitoUserPool(poolData);
+    const authDetails = new Cognito.AuthenticationDetails({ Username: email, Password: password });
+    const cognitoUser = new Cognito.CognitoUser({ Username: email, Pool: userPool });
 
     return new Promise((resolve, reject) => {
         cognitoUser.authenticateUser(authDetails, {
             onSuccess: (result) => {
                 const idToken = result.getIdToken().decodePayload();
                 
-                // SAVE SESSION
+                // Access Token for API, ID Token for User Data
                 localStorage.setItem('userToken', result.getAccessToken().getJwtToken());
                 localStorage.setItem('userDept', idToken['custom:department'] || "Computer Science");
                 
@@ -38,9 +32,7 @@ export async function loginUser(email, password) {
 
                 resolve({ role: role });
             },
-            onFailure: (err) => {
-                reject(err);
-            }
+            onFailure: (err) => reject(err)
         });
     });
 }
