@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>University Login</title>
+  <title>Sign In | Project-FXN</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
   <link rel="stylesheet" href="css/main.css">
 </head>
@@ -11,24 +11,23 @@
   <div class="card">
     <h2>Secure Login</h2>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required style="width:100%; margin:10px 0; padding:12px;">
-      <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px;">
+      <input type="email" id="email" placeholder="Email" required style="width:100%; margin:10px 0; padding:10px;">
+      <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:10px;">
       <button type="submit" class="teacher">Enter Portal</button>
     </form>
   </div>
 </div>
-
 <script type="module">
   import { loginUser } from './js/auth.js';
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     try {
       const user = await loginUser(document.getElementById('email').value, document.getElementById('password').value);
-      // Redirect based on role from your notes
+      // Redirect based on the role we saved in auth.js
       if (user.role === 'Teachers') window.location.href = "dashboard_teacher.html";
       else window.location.href = "dashboard_student.html";
     } catch (err) {
-      alert("Login Error: " + err.message);
+      alert("Login Failed: " + err.message);
     }
   });
 </script>
