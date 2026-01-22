@@ -24,16 +24,17 @@ async function uploadResults(resultsArray) {
         });
 
         if (response.ok) {
-            alert("Upload Successful!");
+            alert(`Success! Uploaded to ${department}.`);
         } else {
-            alert("Upload Failed. Check permissions.");
+            alert("Upload Failed. Check your API authorization.");
         }
     } catch (err) {
-        console.error(err);
+        console.error("Network Error:", err);
     }
 }
 
-document.getElementById('fileInput').addEventListener('change', function(e) {
+// File input listener
+document.getElementById('fileInput')?.addEventListener('change', function(e) {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onload = function(event) {
