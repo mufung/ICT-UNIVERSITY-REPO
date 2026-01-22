@@ -1,34 +1,25 @@
- <!DOCTYPE html>
-<html lang="en">
+ <!-- signin.html - SIMPLIFIED -->
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Login | ICT University</title>
-    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h2>University Portal</h2>
-            <form id="loginForm">
-                <input type="email" id="email" placeholder="Email" required style="width:100%; margin:10px 0; padding:12px;">
-                <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px;">
-                <button type="submit" id="loginBtn" class="teacher">Sign In</button>
-            </form>
-        </div>
-    </div>
+    <h2>University Portal</h2>
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Sign In</button>
+    </form>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
-    
-    <script src="js/config.js"></script>
-    
     <script src="js/auth.js"></script>
-
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('loginBtn');
-            btn.innerText = "Authenticating...";
+            const btn = e.target.querySelector('button');
             btn.disabled = true;
+            btn.textContent = "Signing in...";
             
             try {
                 const result = await window.loginUser(
@@ -36,6 +27,7 @@
                     document.getElementById('password').value
                 );
                 
+                // Redirect based on role
                 if (result.role === 'Teachers') {
                     window.location.href = "dashboard_teacher.html";
                 } else {
@@ -43,8 +35,9 @@
                 }
             } catch (error) {
                 alert("Login Error: " + error.message);
-                btn.innerText = "Sign In";
+                console.error(error);
                 btn.disabled = false;
+                btn.textContent = "Sign In";
             }
         });
     </script>
