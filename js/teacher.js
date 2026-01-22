@@ -1,14 +1,27 @@
- import config from "./config.js";
+// js/teacher.js
+import config from "./config.js";
 
-document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+const form = document.getElementById("resultForm");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const data = {
-    studentId: document.getElementById("studentId").value.trim(),
-    courseCode: document.getElementById("courseCode").value.trim(),
-    semester: document.getElementById("semester").value.trim(),
-    score: Number(document.getElementById("score").value),
-    grade: document.getElementById("grade").value.trim()
+  const studentId = document.getElementById("studentId").value.trim();
+  const courseCode = document.getElementById("courseCode").value.trim();
+  const semester = document.getElementById("semester").value.trim();
+  const score = Number(document.getElementById("score").value);
+
+  if (!studentId || !courseCode || !semester || isNaN(score)) {
+    message.textContent = "❌ All fields are required";
+    return;
+  }
+
+  const payload = {
+    studentId,
+    courseCode,
+    semester,
+    score
   };
 
   try {
@@ -17,20 +30,20 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     });
 
-    const result = await response.json();
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message || "Upload failed");
+      throw new Error(data.message || "Upload failed");
     }
 
-    alert("✅ Result uploaded successfully");
-    document.getElementById("uploadForm").reset();
+    message.textContent = "✅ Result uploaded successfully";
+    form.reset();
 
   } catch (error) {
-    console.error(error);
-    alert("❌ Error uploading result");
+    console.error("Upload error:", error);
+    message.textContent = "❌ Failed to upload result";
   }
 });
