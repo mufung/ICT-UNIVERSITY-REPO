@@ -1,40 +1,53 @@
 import config from './config.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("resultForm");
+// --- Handle Manual Typing ---
+document.getElementById("resultForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const payload = {
+    studentId: document.getElementById("studentId").value.trim(),
+    courseCode: document.getElementById("courseCode").value.trim(),
+    score: Number(document.getElementById("score").value.trim()),
+    semester: document.getElementById("semester").value.trim()
+  };
+  await sendToAPI(payload);
+});
 
-  if (!form) return;
+// --- Handle Multi-Student File Upload ---
+document.getElementById("uploadBtn").addEventListener("click", () => {
+  const file = document.getElementById('fileInput').files[0];
+  if (!file) return alert("Please select your teacher.txt file first!");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // Map HTML input values to the payload
-    const payload = {
-      studentId: document.getElementById("studentId").value.trim(),
-      courseCode: document.getElementById("courseCode").value.trim(),
-      score: Number(document.getElementById("score").value.trim()),
-      semester: document.getElementById("semester").value.trim()
-    };
-
-    try {
-      // Endpoint is /submit-result based on your API configuration
-      const response = await fetch(`${config.api.baseUrl}/submit-result`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const lines = e.target.result.split('\n');
+    
+    for (let line of lines) {
+      if (line.trim() === "") continue;
+      
+      // Parsing the "key: value, key: value" format
+      const parts = line.split(',');
+      const payload = {};
+      parts.forEach(part => {
+        const [key, value] = part.split(':').map(s => s.trim());
+        payload[key] = key === 'score' ? Number(value) : value;
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Result saved successfully to DynamoDB!");
-        form.reset();
-      } else {
-        alert("Error: " + (data.error || "Submission failed"));
-      }
-    } catch (err) {
-      console.error("Network error:", err);
-      alert("Network error. Please check your internet and API Gateway status.");
+      await sendToAPI(payload);
     }
-  });
+    alert("Batch Upload Finished! Check DynamoDB.");
+  };
+  reader.readAsText(file);
 });
+
+async function sendToAPI(payload) {
+  try {
+    const response = await fetch(`${config.api.baseUrl}/submit-result`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    console.log(`Uploaded ${payload.studentId}`);
+  } catch (err) {
+    console.error("Error uploading:", payload.studentId);
+  }
+}
