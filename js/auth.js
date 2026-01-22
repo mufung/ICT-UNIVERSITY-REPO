@@ -26,17 +26,13 @@ export async function loginUser(email, password) {
                 const department = payload['custom:department'] || "Computer Science";
                 const role = payload['cognito:groups'] ? payload['cognito:groups'][0] : "Students";
 
-                // Save to LocalStorage so dashboard_teacher.html can see them
                 localStorage.setItem('userToken', idToken);
-                localStorage.setItem('userEmail', payload.email);
                 localStorage.setItem('userDept', department);
                 localStorage.setItem('userRole', role);
 
                 resolve({ idToken, department, role });
             },
-            onFailure: (err) => {
-                reject(err);
-            }
+            onFailure: (err) => { reject(err); }
         });
     });
 }
