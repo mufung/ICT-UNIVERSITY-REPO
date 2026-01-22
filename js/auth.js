@@ -1,24 +1,24 @@
- // js/auth.js - FIXED VERSION
-async function loginUser(email, password) {
-    // Check if Cognito library is loaded globally
-    if (!window.AmazonCognitoIdentity || !window.AmazonCognitoIdentity.CognitoUserPool) {
-        throw new Error("Cognito SDK not loaded. Check signin.html script tag.");
+ // js/auth.js
+window.loginUser = async function(email, password) {
+    const SDK = window.AmazonCognitoIdentity;
+    const cfg = window.appConfig;
+
+    if (!SDK) {
+        throw new Error("AWS SDK failed to load. Please check your connection.");
     }
 
-    const { CognitoUserPool, CognitoUser, AuthenticationDetails } = window.AmazonCognitoIdentity;
-    
     const poolData = {
-        UserPoolId: "us-west-1_xxxxxxxxx", // Replace with your actual User Pool ID
-        ClientId: "7ugvqkg6l7859oto4v5vcjqjus" // Your app client ID
+        UserPoolId: cfg.cognito.userPoolId,
+        ClientId: cfg.cognito.clientId
     };
     
-    const userPool = new CognitoUserPool(poolData);
-    const authDetails = new AuthenticationDetails({
+    const userPool = new SDK.CognitoUserPool(poolData);
+    const authDetails = new SDK.AuthenticationDetails({
         Username: email,
         Password: password
     });
     
-    const cognitoUser = new CognitoUser({
+    const cognitoUser = new SDK.CognitoUser({
         Username: email,
         Pool: userPool
     });
@@ -26,27 +26,21 @@ async function loginUser(email, password) {
     return new Promise((resolve, reject) => {
         cognitoUser.authenticateUser(authDetails, {
             onSuccess: (result) => {
-                // Get user tokens
-                const accessToken = result.getAccessToken().getJwtToken();
                 const idToken = result.getIdToken().decodePayload();
                 
-                // Store tokens
-                localStorage.setItem('userToken', accessToken);
-                localStorage.setItem('userEmail', email);
+                // Save tokens and info for the dashboards
+                localStorage.setItem('userToken', result.getAccessToken().getJwtToken());
+                localStorage.setItem('userDept', idToken['custom:department'] || "Computer Science");
                 
-                // Get user groups from token
                 const groups = idToken['cognito:groups'] || [];
                 const role = groups.includes('Teachers') ? 'Teachers' : 'Students';
                 localStorage.setItem('userRole', role);
                 
-                resolve({ role: role, email: email });
+                resolve({ role: role });
             },
             onFailure: (err) => {
-                reject(new Error(err.message || "Login failed"));
+                reject(new Error(err.message || "Invalid credentials"));
             }
         });
     });
-}
-
-// Make function globally available
-window.loginUser = loginUser;
+};
