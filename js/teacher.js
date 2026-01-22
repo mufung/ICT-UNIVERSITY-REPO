@@ -1,6 +1,25 @@
  import config from './config.js';
 
-// Batch Upload Logic from your working notes
+// PROTECT THE PAGE: Redirect if not a teacher
+const currentToken = localStorage.getItem('userToken');
+const currentRole = localStorage.getItem('userRole');
+if (!currentToken || currentRole !== 'Teachers') {
+  window.location.href = "signin.html";
+}
+
+// Manual Entry Logic
+document.getElementById("resultForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const payload = {
+    studentId: document.getElementById("studentId").value.trim(),
+    courseCode: document.getElementById("courseCode").value.trim(),
+    score: Number(document.getElementById("score").value.trim()),
+    semester: document.getElementById("semester").value.trim()
+  };
+  await sendToAPI(payload);
+});
+
+// Batch Upload Logic (teacher.txt)
 document.getElementById("uploadBtn")?.addEventListener("click", () => {
   const file = document.getElementById('fileInput').files[0];
   if (!file) return alert("Select teacher.txt first!");
@@ -23,17 +42,19 @@ document.getElementById("uploadBtn")?.addEventListener("click", () => {
 });
 
 async function sendToAPI(payload) {
-  const token = localStorage.getItem('userToken'); // Grabbed from login
-  const dept = localStorage.getItem('userDept');   // Grabbed from login
-  
+  const token = localStorage.getItem('userToken');
+  const dept = localStorage.getItem('userDept');
   try {
-    await fetch(`${config.api.baseUrl}/submit-result`, {
+    const response = await fetch(`${config.api.baseUrl}/submit-result`, {
       method: "POST",
       headers: { 
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", 
         "Authorization": token 
       },
       body: JSON.stringify({ ...payload, department: dept })
     });
-  } catch (err) { console.error("Upload Error:", err); }
+    if (response.ok) console.log("Uploaded successfully: ", payload.studentId);
+  } catch (err) {
+    console.error("API Error:", err);
+  }
 }
