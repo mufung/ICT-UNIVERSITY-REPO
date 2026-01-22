@@ -1,5 +1,5 @@
  <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Sign In | ICT University</title>
@@ -11,22 +11,36 @@
   <div class="card">
     <h2>Secure Login</h2>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required style="width:100%; margin:10px 0; padding:12px;">
-      <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px;">
-      <button type="submit" class="teacher">Enter Portal</button>
+      <input type="email" id="email" placeholder="University Email" required style="width:100%; margin:10px 0; padding:12px; border-radius:8px; border:1px solid #ddd;">
+      <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px; border-radius:8px; border:1px solid #ddd;">
+      <button type="submit" class="teacher" id="loginBtn">Enter Portal</button>
     </form>
   </div>
 </div>
+
 <script type="module">
   import { loginUser } from './js/auth.js';
+  
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    btn.innerText = "Authenticating...";
+    
     try {
-      const user = await loginUser(document.getElementById('email').value, document.getElementById('password').value);
-      if (user.role === 'Teachers') window.location.href = "dashboard_teacher.html";
-      else window.location.href = "dashboard_student.html";
+      const user = await loginUser(
+        document.getElementById('email').value, 
+        document.getElementById('password').value
+      );
+      
+      // Navigate based on role
+      if (user.role === 'Teachers') {
+        window.location.href = "dashboard_teacher.html";
+      } else {
+        window.location.href = "dashboard_student.html";
+      }
     } catch (err) {
-      alert("Login Failed: " + err.message);
+      alert("Login Error: " + err.message);
+      btn.innerText = "Enter Portal";
     }
   });
 </script>
