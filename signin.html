@@ -1,48 +1,49 @@
  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sign In | ICT University</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
-  <link rel="stylesheet" href="css/main.css">
+    <meta charset="UTF-8">
+    <title>Login | ICT University</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<div class="container">
-  <div class="card">
-    <h2>Secure Login</h2>
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="University Email" required style="width:100%; margin:10px 0; padding:12px; border-radius:8px; border:1px solid #ddd;">
-      <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px; border-radius:8px; border:1px solid #ddd;">
-      <button type="submit" class="teacher" id="loginBtn">Enter Portal</button>
-    </form>
-  </div>
-</div>
+    <div class="container">
+        <div class="card">
+            <h2>University Portal</h2>
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="Email" required style="width:100%; margin:10px 0; padding:12px;">
+                <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px;">
+                <button type="submit" id="loginBtn" class="teacher">Sign In</button>
+            </form>
+        </div>
+    </div>
 
-<script type="module">
-  import { loginUser } from './js/auth.js';
-  
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('loginBtn');
-    btn.innerText = "Authenticating...";
-    
-    try {
-      const user = await loginUser(
-        document.getElementById('email').value, 
-        document.getElementById('password').value
-      );
-      
-      // Navigate based on role
-      if (user.role === 'Teachers') {
-        window.location.href = "dashboard_teacher.html";
-      } else {
-        window.location.href = "dashboard_student.html";
-      }
-    } catch (err) {
-      alert("Login Error: " + err.message);
-      btn.innerText = "Enter Portal";
-    }
-  });
-</script>
+    <script type="module">
+        import { loginUser } from './js/auth.js';
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            btn.innerText = "Connecting...";
+
+            try {
+                const user = await loginUser(
+                    document.getElementById('email').value,
+                    document.getElementById('password').value
+                );
+                
+                // Success: Redirect based on role
+                if (user.role === 'Teachers') {
+                    window.location.href = "dashboard_teacher.html";
+                } else {
+                    window.location.href = "dashboard_student.html";
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Login Error: " + err.message);
+                btn.innerText = "Sign In";
+            }
+        });
+    </script>
 </body>
 </html>
