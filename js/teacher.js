@@ -1,49 +1,46 @@
-// js/teacher.js
-import config from "./config.js";
+ // teacher.js
+import config from './config.js';
 
-const form = document.getElementById("resultForm");
-const message = document.getElementById("message");
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("resultForm");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const studentId = document.getElementById("studentId").value.trim();
-  const courseCode = document.getElementById("courseCode").value.trim();
-  const semester = document.getElementById("semester").value.trim();
-  const score = Number(document.getElementById("score").value);
-
-  if (!studentId || !courseCode || !semester || isNaN(score)) {
-    message.textContent = "❌ All fields are required";
+  if (!form) {
+    console.error("Form not found! Check HTML.");
     return;
   }
 
-  const payload = {
-    studentId,
-    courseCode,
-    semester,
-    score
-  };
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await fetch(`${config.api.baseUrl}/results`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    const payload = {
+      studentId: document.getElementById("studentId").value.trim(),
+      courseCode: document.getElementById("courseCode").value.trim(),
+      score: Number(document.getElementById("score").value.trim()),
+      semester: document.getElementById("semester").value.trim()
+    };
 
-    const data = await response.json();
+    try {
+      const response = await fetch(`${config.api.baseUrl}/submit-result`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
 
-    if (!response.ok) {
-      throw new Error(data.message || "Upload failed");
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Submission failed");
+        return;
+      }
+
+      alert("Result submitted successfully");
+      form.reset();
+
+    } catch (err) {
+      console.error("Network error:", err);
+      alert("Network error. Check console.");
     }
-
-    message.textContent = "✅ Result uploaded successfully";
-    form.reset();
-
-  } catch (error) {
-    console.error("Upload error:", error);
-    message.textContent = "❌ Failed to upload result";
-  }
+  });
 });
