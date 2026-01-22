@@ -1,43 +1,51 @@
- <!-- signin.html - SIMPLIFIED -->
-<!DOCTYPE html>
-<html>
+ <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Login | ICT University</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
+    <meta charset="UTF-8">
+    <title>University Portal | Login</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <h2>University Portal</h2>
-    <form id="loginForm">
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button type="submit">Sign In</button>
-    </form>
+    <div class="container">
+        <div class="card">
+            <h2>ICT University Portal</h2>
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="Email" required style="width:100%; margin:10px 0; padding:12px;">
+                <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px;">
+                <button type="submit" id="loginBtn" class="teacher">Sign In</button>
+            </form>
+        </div>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
+    
+    <script src="js/config.js"></script>
+    
     <script src="js/auth.js"></script>
+
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
+            const btn = document.getElementById('loginBtn');
+            btn.innerText = "Verifying...";
             btn.disabled = true;
-            btn.textContent = "Signing in...";
-            
+
             try {
+                // Calling the global function from auth.js
                 const result = await window.loginUser(
                     document.getElementById('email').value,
                     document.getElementById('password').value
                 );
                 
-                // Redirect based on role
                 if (result.role === 'Teachers') {
                     window.location.href = "dashboard_teacher.html";
                 } else {
                     window.location.href = "dashboard_student.html";
                 }
             } catch (error) {
-                alert("Login Error: " + error.message);
-                console.error(error);
+                alert("Access Denied: " + error.message);
+                btn.innerText = "Sign In";
                 btn.disabled = false;
-                btn.textContent = "Sign In";
             }
         });
     </script>
