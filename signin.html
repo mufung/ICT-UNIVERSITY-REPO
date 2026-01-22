@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Login | ICT University</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -18,30 +17,34 @@
         </div>
     </div>
 
-    <script type="module">
-        import { loginUser } from './js/auth.js';
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
+    
+    <script src="js/config.js"></script>
+    
+    <script src="js/auth.js"></script>
 
+    <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('loginBtn');
-            btn.innerText = "Connecting...";
-
+            btn.innerText = "Authenticating...";
+            btn.disabled = true;
+            
             try {
-                const user = await loginUser(
+                const result = await window.loginUser(
                     document.getElementById('email').value,
                     document.getElementById('password').value
                 );
                 
-                // Success: Redirect based on role
-                if (user.role === 'Teachers') {
+                if (result.role === 'Teachers') {
                     window.location.href = "dashboard_teacher.html";
                 } else {
                     window.location.href = "dashboard_student.html";
                 }
-            } catch (err) {
-                console.error(err);
-                alert("Login Error: " + err.message);
+            } catch (error) {
+                alert("Login Error: " + error.message);
                 btn.innerText = "Sign In";
+                btn.disabled = false;
             }
         });
     </script>
