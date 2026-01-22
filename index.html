@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,17 +6,19 @@
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<header style="text-align:center; padding:50px;">
-  <h1>ICT University</h1>
-  <p>Secure Academic Results Portal</p>
+<header style="text-align:center; padding:60px 20px;">
+  <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 3rem;">ICT University</h1>
+  <p>Secure Academic Results Management</p>
 </header>
-<div class="container" style="display:flex; justify-content:center; gap:20px;">
+<div class="container" style="display:flex; justify-content:center; gap:30px; padding: 20px;">
   <div class="card">
     <h2>Students</h2>
+    <p>View results and report discrepancies.</p>
     <button class="student" onclick="window.location.href='signin.html?role=Students'">Student Login</button>
   </div>
   <div class="card">
     <h2>Teachers</h2>
+    <p>Upload grades and manage academic records.</p>
     <button class="teacher" onclick="window.location.href='signin.html?role=Teachers'">Teacher Login</button>
   </div>
 </div>
