@@ -1,11 +1,12 @@
 import config from './config.js';
 
-// 1. Function to handle the Bulk Upload
 async function uploadResults(resultsArray) {
-    const token = localStorage.getItem('userToken'); // Retrieve the Cognito Token
-    
+    const token = localStorage.getItem('userToken');
+    const department = localStorage.getItem('userDept');
+
     if (!token) {
         alert("Session expired. Please log in again.");
+        window.location.href = 'signin.html'; 
         return;
     }
 
@@ -14,44 +15,49 @@ async function uploadResults(resultsArray) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token // THE SECURITY TOKEN
+                'Authorization': token 
             },
             body: JSON.stringify({
-                results: resultsArray // Sending multiple students at once
+                department: department, 
+                results: resultsArray 
             })
         });
 
         if (response.ok) {
-            alert("Bulk Upload Successful!");
+            alert(`Bulk Upload Successful! ${resultsArray.length} records added to ${department}.`);
         } else {
             const error = await response.json();
-            alert("Upload Failed: " + error.message);
+            alert("Upload Failed: " + (error.message || "Unauthorized"));
         }
     } catch (err) {
-        console.error("Network Error:", err);
+        console.error("Upload Error:", err);
+        alert("Network Error. Check your connection.");
     }
 }
 
-// 2. Logic to read the text file you created earlier
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
-    const reader = new FileReader();
+    if (!file) return;
 
+    const reader = new FileReader();
     reader.onload = function(event) {
         const text = event.target.result;
-        const lines = text.split('\n');
-        const results = lines.map(line => {
-            // Logic to parse your teacher.txt format: "studentId: XXX, score: YYY..."
-            const parts = line.split(',');
-            return {
-                studentId: parts[0].split(': ')[1],
-                courseCode: parts[1].split(': ')[1],
-                score: parts[2].split(': ')[1],
-                semester: parts[3].split(': ')[1]
-            };
-        });
+        const lines = text.split('\n').filter(l => l.trim() !== "");
         
-        uploadResults(results);
+        try {
+            const results = lines.map(line => {
+                const parts = line.split(',');
+                return {
+                    studentId: parts[0].split(': ')[1].trim(),
+                    courseCode: parts[1].split(': ')[1].trim(),
+                    score: parts[2].split(': ')[1].trim(),
+                    semester: parts[3].split(': ')[1].trim()
+                };
+            });
+            uploadResults(results);
+        } catch (err) {
+            alert("File Format Error. Use: studentId: X, courseCode: Y, score: Z, semester: S");
+        }
     };
     reader.readAsText(file);
 });
