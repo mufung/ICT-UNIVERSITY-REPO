@@ -5,20 +5,16 @@
   <title>Teacher Result Submission</title>
 </head>
 <body>
+  <h2>Teacher Result Submission</h2>
+  <form id="resultForm">
+    <input id="studentId" type="text" placeholder="Student ID" required />
+    <input id="courseCode" type="text" placeholder="Course Code" required />
+    <input id="score" type="number" placeholder="Score" required />
+    <input id="semester" type="text" placeholder="Semester (e.g. 2025/2026)" required />
+    <button type="submit">Submit Result</button>
+  </form>
 
-<h2>Teacher Result Submission</h2>
-
-<form id="resultForm">
-  <input id="studentId" placeholder="Student ID" required />
-  <input id="courseCode" placeholder="Course Code" required />
-  <input id="score" placeholder="Score" required />
-  <input id="semester" placeholder="Semester (e.g. 2025/2026)" required />
-  <button type="submit">Submit Result</button>
-</form>
-
-<!-- Load config first, then teacher.js -->
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/teacher.js"></script>
-
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/teacher.js"></script>
 </body>
 </html>
