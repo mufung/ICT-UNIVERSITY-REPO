@@ -41,3 +41,41 @@ button {
   background: #2563eb;
   color: white;
 }
+
+
+
+
+
+.portal-header {
+    background-color: #1e293b; /* Dark slate */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #14b8a6; /* Teal accent */
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.user-info {
+    font-size: 0.9rem;
+}
+
+.user-info strong {
+    color: #2dd4bf;
+}
+
+.logout-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.logout-btn:hover {
+    background-color: #dc2626;
+}
