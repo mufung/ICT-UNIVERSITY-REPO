@@ -1,7 +1,9 @@
- import config from './config.js';
+ // js/teacher.js
+const config = window.appConfig;
 
-// Security check
-if (localStorage.getItem('userRole') !== 'Teachers') {
+// Verification Check
+const userRole = localStorage.getItem('userRole');
+if (userRole !== 'Teachers') {
     window.location.href = "signin.html";
 }
 
@@ -21,7 +23,7 @@ document.getElementById("uploadBtn")?.addEventListener("click", () => {
             });
             await sendToAPI(payload);
         }
-        alert("Upload Processed. Check your database.");
+        alert("Batch Upload Finished!");
     };
     reader.readAsText(file);
 });
@@ -31,7 +33,7 @@ async function sendToAPI(payload) {
     const dept = localStorage.getItem('userDept');
 
     try {
-        await fetch(`${config.api.baseUrl}/submit-result`, {
+        await fetch(`${window.appConfig.api.baseUrl}/submit-result`, {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
@@ -40,6 +42,6 @@ async function sendToAPI(payload) {
             body: JSON.stringify({ ...payload, department: dept })
         });
     } catch (err) {
-        console.error("Batch error:", err);
+        console.error("Upload error:", err);
     }
 }
