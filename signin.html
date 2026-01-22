@@ -2,18 +2,18 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ICT Portal Login</title>
+  <title>University Login</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 <div class="container">
   <div class="card">
-    <h2>University Login</h2>
+    <h2>Secure Login</h2>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required style="width:100%; padding:10px; margin:5px 0;">
-      <input type="password" id="password" placeholder="Password" required style="width:100%; padding:10px; margin:5px 0;">
-      <button type="submit" class="teacher">Enter Portal</button>
+      <input type="email" id="email" placeholder="Email" required style="width:100%; margin:10px 0; padding:10px;">
+      <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:10px;">
+      <button type="submit" class="teacher" id="loginBtn">Enter Portal</button>
     </form>
   </div>
 </div>
@@ -22,12 +22,15 @@
   import { loginUser } from './js/auth.js';
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    btn.innerText = "Connecting...";
     try {
       const user = await loginUser(document.getElementById('email').value, document.getElementById('password').value);
-      if (user.role === 'Teachers') window.location.href = "dashboard_teacher.html";
-      else window.location.href = "dashboard_student.html";
+      // Redirect based on role
+      window.location.href = (user.role === 'Teachers') ? "dashboard_teacher.html" : "dashboard_student.html";
     } catch (err) {
-      alert("Error: " + err.message);
+      alert("Login Error: " + err.message);
+      btn.innerText = "Enter Portal";
     }
   });
 </script>
