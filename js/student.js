@@ -1,42 +1,18 @@
-document
-  .getElementById("studentResultForm")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
+ const studentId = document.getElementById("studentId").value;
+const semester = document.getElementById("semester")?.value;
 
-    const studentId = document.getElementById("studentId").value.trim();
-    const output = document.getElementById("resultsOutput");
+let url = `${window.config.STUDENT_RESULTS_API}?studentId=${studentId}`;
 
-    output.textContent = "Loading results...";
+if (semester) {
+  url += `&semester=${semester}`;
+}
 
-    try {
-      const url =
-        `${window.config.API_INVOKE_URL}` +
-        `${window.config.ENDPOINTS.STUDENT_RESULTS}` +
-        `?studentId=${encodeURIComponent(studentId)}`;
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        output.textContent = data.error || "Failed to retrieve results.";
-        return;
-      }
-
-      if (!data.results || data.results.length === 0) {
-        output.textContent = "No results found.";
-        return;
-      }
-
-      output.textContent = JSON.stringify(data, null, 2);
-
-    } catch (err) {
-      console.error(err);
-      output.textContent = "Network error. Check console.";
-    }
+fetch(url)
+  .then(res => res.json())
+  .then(data => {
+    console.log("Student results:", data);
+    // render results here
+  })
+  .catch(err => {
+    console.error("Error loading results", err);
   });
