@@ -6,22 +6,16 @@
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h2>Check Your Results</h2>
-      <p>Enter your Student ID to retrieve your academic records from DynamoDB.</p>
-      
-      <form id="studentResultForm">
-        <input type="text" id="studentId" placeholder="e.g., ICT-2026-001" required />
-        <button type="submit" class="student">View Results</button>
-      </form>
-
-      <hr />
-      
-      <div id="resultsOutput" style="margin-top: 20px; text-align: left;"></div>
-    </div>
-  </div>
-
+  
+ <div class="card">
+  <h2>Check Your Results</h2>
+  <form id="studentResultForm">
+    <input type="text" id="studentId" placeholder="Enter ID (e.g., ICT-2026-001)" required />
+    <button type="submit">View Results</button>
+  </form>
+  <div id="resultsOutput" style="margin-top: 20px;"></div>
+</div>
+  
   <script type="module" src="js/config.js"></script>
   <script type="module" src="js/student.js"></script>
 </body>
