@@ -2,20 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In | ICT University</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
-    
     <style>
-        :root { --bg: #f5f4f1; --primary: #0a2540; --accent: #3b82f6; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 28px; box-shadow: 0 20px 50px rgba(10,37,64,0.08); width: 100%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 999px; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        :root { --primary: #0a2540; --accent: #3b82f6; --bg: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        button:hover { background: var(--accent); }
     </style>
 </head>
 <body>
-    <div class="login-card">
+    <div class="card">
         <h2>Sign In</h2>
+        <p>Accessing the Users Portal</p>
         <form id="loginForm">
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
@@ -28,21 +30,18 @@
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
             const btn = document.getElementById('submitBtn');
-
-            btn.innerText = "Authenticating...";
-
+            btn.innerText = "Connecting...";
+            
             try {
-                const user = await loginUser(email, password);
-                if (user.role === 'Teachers') {
-                    window.location.href = 'dashboard_teacher.html';
-                } else {
-                    window.location.href = 'dashboard_student.html';
-                }
+                const user = await loginUser(
+                    document.getElementById('email').value, 
+                    document.getElementById('password').value
+                );
+                // Redirect based on role
+                window.location.href = (user.role === 'Teachers') ? 'dashboard_teacher.html' : 'dashboard_student.html';
             } catch (err) {
-                alert("Login Error: " + err.message);
+                alert("Error: " + err.message);
                 btn.innerText = "Enter Portal";
             }
         });
