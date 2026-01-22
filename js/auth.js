@@ -1,38 +1,36 @@
-import config from './config.js';
+ import config from './config.js';
 
 export async function loginUser(email, password) {
-    const userPoolData = {
-        UserPoolId: config.cognito.userPoolId,
-        ClientId: config.cognito.clientId
+    const poolData = { 
+        UserPoolId: config.cognito.userPoolId, 
+        ClientId: config.cognito.clientId 
     };
-    
-    const userPool = new AmazonCognitoIdentity.CognitoUserPool(userPoolData);
-    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-        Username: email,
-        Password: password
+    const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({ 
+        Username: email, 
+        Password: password 
     });
-    
-    const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
-        Username: email,
-        Pool: userPool
+    const cognitoUser = new AmazonCognitoIdentity.CognitoUser({ 
+        Username: email, 
+        Pool: userPool 
     });
 
     return new Promise((resolve, reject) => {
         cognitoUser.authenticateUser(authDetails, {
             onSuccess: (result) => {
-                const idToken = result.getIdToken().getJwtToken();
                 const payload = result.getIdToken().decodePayload();
                 
-                const department = payload['custom:department'] || "Computer Science";
-                const role = payload['cognito:groups'] ? payload['cognito:groups'][0] : "Students";
+                // SAVE TO STORAGE: Keeping your success data
+                localStorage.setItem('userToken', result.getIdToken().getJwtToken());
+                localStorage.setItem('userDept', payload['custom:department'] || "Computer Science");
+                localStorage.setItem('userRole', payload['cognito:groups'] ? payload['cognito:groups'][0] : 'Students');
 
-                localStorage.setItem('userToken', idToken);
-                localStorage.setItem('userDept', department);
-                localStorage.setItem('userRole', role);
-
-                resolve({ idToken, department, role });
+                resolve({ 
+                    role: localStorage.getItem('userRole'), 
+                    dept: localStorage.getItem('userDept') 
+                });
             },
-            onFailure: (err) => { reject(err); }
+            onFailure: (err) => reject(err)
         });
     });
 }
