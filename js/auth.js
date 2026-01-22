@@ -1,17 +1,47 @@
-function login(role) {
-  localStorage.setItem("selectedRole", role);
+import config from './config.js';
 
-  const url =
-    `${COGNITO_CONFIG.domain}/login` +
-    `?client_id=${COGNITO_CONFIG.clientId}` +
-    `&response_type=${COGNITO_CONFIG.responseType}` +
-    `&scope=${encodeURIComponent(COGNITO_CONFIG.scopes)}` +
-    `&redirect_uri=${encodeURIComponent(COGNITO_CONFIG.redirectUri)}`;
+export async function loginUser(email, password) {
+    const userPoolData = {
+        UserPoolId: config.cognito.userPoolId,
+        ClientId: config.cognito.clientId
+    };
+    
+    const userPool = new AmazonCognitoIdentity.CognitoUserPool(userPoolData);
+    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+        Username: email,
+        Password: password
+    });
+    
+    const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+        Username: email,
+        Pool: userPool
+    });
 
-  window.location.href = url;
-}
+    return new Promise((resolve, reject) => {
+        cognitoUser.authenticateUser(authDetails, {
+            onSuccess: (result) => {
+                // Get the ID Token (contains custom attributes)
+                const idToken = result.getIdToken().getJwtToken();
+                const payload = result.getIdToken().decodePayload();
+                
+                // VERIFICATION: Extract Department
+                const department = payload['custom:department'] || "No Department Set";
+                const role = payload['cognito:groups'] ? payload['cognito:groups'][0] : "No Role";
 
-function logout() {
-  localStorage.clear();
-  window.location.href = "index.html";
+                console.log("Login Success!");
+                console.log("Verified Department:", department);
+                console.log("User Role:", role);
+
+                // Save to local storage for use in Teacher/Student pages
+                localStorage.setItem('userToken', idToken);
+                localStorage.setItem('userDept', department);
+                localStorage.setItem('userRole', role);
+
+                resolve({ idToken, department, role });
+            },
+            onFailure: (err) => {
+                reject(err);
+            }
+        });
+    });
 }
