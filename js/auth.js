@@ -1,10 +1,10 @@
- // js/auth.js
+// js/auth.js
 window.loginUser = async function(email, password) {
     const SDK = window.AmazonCognitoIdentity;
     const cfg = window.appConfig;
 
     if (!SDK) {
-        throw new Error("AWS SDK failed to load. Please check your connection.");
+        throw new Error("AWS Cognito SDK failed to load. Check your internet connection.");
     }
 
     const poolData = {
@@ -28,7 +28,7 @@ window.loginUser = async function(email, password) {
             onSuccess: (result) => {
                 const idToken = result.getIdToken().decodePayload();
                 
-                // Save tokens and info for the dashboards
+                // Store Access Token for API calls and Role for page access
                 localStorage.setItem('userToken', result.getAccessToken().getJwtToken());
                 localStorage.setItem('userDept', idToken['custom:department'] || "Computer Science");
                 
@@ -39,7 +39,7 @@ window.loginUser = async function(email, password) {
                 resolve({ role: role });
             },
             onFailure: (err) => {
-                reject(new Error(err.message || "Invalid credentials"));
+                reject(new Error(err.message || "Invalid email or password."));
             }
         });
     });
