@@ -2,52 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>University Portal | Login</title>
-    <link rel="stylesheet" href="css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Portal | Secure Login</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: #333; margin-bottom: 1.5rem; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #14b8a6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
+        button:hover { background: #0d9488; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #errorMessage { color: #e11d48; font-size: 14px; margin-top: 10px; display: none; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h2>ICT University Portal</h2>
-            <form id="loginForm">
-                <input type="email" id="email" placeholder="University Email" required style="width:100%; margin:10px 0; padding:12px;">
-                <input type="password" id="password" placeholder="Password" required style="width:100%; margin:10px 0; padding:12px;">
-                <button type="submit" id="loginBtn" class="teacher">Sign In</button>
-            </form>
-        </div>
-    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.0.1/amazon-cognito-identity.js"></script>
-    
-    <script src="js/config.js"></script>
-    
-    <script src="js/auth.js"></script>
+<div class="card">
+    <h2>ICT University</h2>
+    <p>Sign in to your portal</p>
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="University Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit" id="loginBtn">Sign In</button>
+    </form>
+    <div id="errorMessage"></div>
+</div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('loginBtn');
-            btn.innerText = "Verifying...";
-            btn.disabled = true;
+<script>
+    // CONFIGURATION - Hardcoded here so it cannot fail
+    const poolData = {
+        UserPoolId: "us-west-1_mbnfq4DcV",
+        ClientId: "7ugvqk6l7859oto4v5vcjqjus"
+    };
 
-            try {
-                // Calling the global function from auth.js
-                const result = await window.loginUser(
-                    document.getElementById('email').value,
-                    document.getElementById('password').value
-                );
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorDiv = document.getElementById('errorMessage');
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Reset UI
+        errorDiv.style.display = 'none';
+        loginBtn.disabled = true;
+        loginBtn.innerText = "Authenticating...";
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Ensure the SDK is present
+        if (typeof AmazonCognitoIdentity === 'undefined') {
+            showError("SDK failed to load. Please check your internet connection.");
+            return;
+        }
+
+        const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+            Username: email,
+            Password: password
+        });
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+            Username: email,
+            Pool: userPool
+        });
+
+        cognitoUser.authenticateUser(authDetails, {
+            onSuccess: (result) => {
+                const idToken = result.getIdToken().decodePayload();
                 
-                if (result.role === 'Teachers') {
+                // 1. Store the Authorization Token for API calls
+                localStorage.setItem('userToken', result.getAccessToken().getJwtToken());
+                
+                // 2. Store user details
+                localStorage.setItem('userDept', idToken['custom:department'] || "Computer Science");
+                
+                // 3. Determine Role
+                const groups = idToken['cognito:groups'] || [];
+                const role = groups.includes('Teachers') ? 'Teachers' : 'Students';
+                localStorage.setItem('userRole', role);
+
+                // 4. Redirect
+                if (role === 'Teachers') {
                     window.location.href = "dashboard_teacher.html";
                 } else {
                     window.location.href = "dashboard_student.html";
                 }
-            } catch (error) {
-                alert("Access Denied: " + error.message);
-                btn.innerText = "Sign In";
-                btn.disabled = false;
+            },
+            onFailure: (err) => {
+                showError(err.message || "Invalid email or password.");
             }
         });
-    </script>
+    });
+
+    function showError(msg) {
+        errorDiv.innerText = msg;
+        errorDiv.style.display = 'block';
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Sign In";
+    }
+</script>
+
 </body>
 </html>
