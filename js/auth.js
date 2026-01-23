@@ -1,3 +1,5 @@
+/*
+
 // js/auth.js
 window.loginUser = async function(email, password) {
     const SDK = window.AmazonCognitoIdentity;
@@ -44,3 +46,5 @@ window.loginUser = async function(email, password) {
         });
     });
 };
+
+*/
