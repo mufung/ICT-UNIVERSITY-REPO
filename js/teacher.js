@@ -1,6 +1,6 @@
-// js/teacher.js
+ // js/teacher.js
 (function() {
-    // Security Guard
+    // Basic Security: Send back to login if the role isn't Teachers
     if (localStorage.getItem('userRole') !== 'Teachers') {
         window.location.href = "signin.html";
     }
@@ -9,7 +9,7 @@
     if (uploadBtn) {
         uploadBtn.addEventListener("click", () => {
             const file = document.getElementById('fileInput').files[0];
-            if (!file) return alert("Please select your teacher.txt file!");
+            if (!file) return alert("Please select the teacher.txt file!");
 
             const reader = new FileReader();
             reader.onload = async (e) => {
@@ -23,7 +23,7 @@
                     });
                     await sendToAPI(payload);
                 }
-                alert("Upload Complete!");
+                alert("Batch Upload Finished!");
             };
             reader.readAsText(file);
         });
@@ -44,7 +44,7 @@
                 body: JSON.stringify({ ...payload, department: dept })
             });
         } catch (err) {
-            console.error("Batch error for student " + payload.studentId, err);
+            console.error("Failed to upload student: " + payload.studentId, err);
         }
     }
 })();
