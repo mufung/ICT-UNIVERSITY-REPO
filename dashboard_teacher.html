@@ -1,37 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Teacher Portal | Project-FXN</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard | ICT University</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0fdfa; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        h1 { color: #0d9488; border-bottom: 2px solid #5eead4; padding-bottom: 10px; }
+        section { margin-bottom: 30px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px; }
+        h2 { font-size: 1.2rem; color: #334155; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+        button { background: #14b8a6; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        button:hover { background: #0d9488; }
+        .upload-area { border: 2px dashed #94a3b8; text-align: center; padding: 20px; background: #f8fafc; cursor: pointer; margin-top: 10px; }
+        #statusMsg { margin-top: 15px; padding: 15px; border-radius: 5px; display: none; font-weight: bold; }
+        .logout-btn { background:#ef4444; margin-top:20px; width:auto; display:inline-block; }
+    </style>
 </head>
 <body>
 
+<div class="container">
+    <h1>Teacher Dashboard</h1>
+    <p id="welcome">Academic Results Portal</p>
 
-<header class="portal-header">
-    <div class="logo"><strong>Project-FXN</strong> Portal</div>
-    <div class="user-info" id="userProfile">
-        Loading profile...
-    </div>
+    <section>
+        <h2>Manual Entry</h2>
+        <form id="manualForm">
+            <input type="text" id="studentId" placeholder="Student ID (e.g. ICT-2026-001)" required>
+            <input type="text" id="courseCode" placeholder="Course Code (e.g. CSC301)" required>
+            <input type="number" id="score" placeholder="Score (0-100)" required min="0" max="100">
+            <select id="semester">
+                <option value="Fall 2025">Fall 2025</option>
+                <option value="Spring 2026">Spring 2026</option>
+            </select>
+            <button type="submit">Submit Record</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Batch Upload</h2>
+        <div class="upload-area">
+            <input type="file" id="fileInput" accept=".txt">
+            <p>Select your <strong>teacher.txt</strong></p>
+        </div>
+        <button id="uploadBtn" style="margin-top: 15px; background: #0f172a;">Run Batch Process</button>
+    </section>
+
+    <div id="statusMsg"></div>
     <button class="logout-btn" onclick="logout()">Logout</button>
-</header>
+</div>
 
-  
-  <h2>1. Manual Typing Entry</h2>
-  <form id="resultForm">
-    <input id="studentId" type="text" placeholder="Student ID" required />
-    <input id="courseCode" type="text" placeholder="Course Code" required />
-    <input id="score" type="number" placeholder="Score" required />
-    <input id="semester" type="text" placeholder="Semester" required />
-    <button type="submit">Submit One Result</button>
-  </form>
+<script>
+    // --- SETTINGS ---
+    const API_ENDPOINT = "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev/submit-result";
+    
+    // --- AUTH CHECK ---
+    const jwtToken = localStorage.getItem('userToken');
+    const userRole = localStorage.getItem('userRole');
+    const userDept = localStorage.getItem('userDept') || "Computer Science";
 
-  <hr />
+    if (!jwtToken || userRole !== 'Teachers') {
+        alert("Access Denied. Please log in as a Teacher.");
+        window.location.href = "signin.html";
+    }
 
-  <h2>2. Upload Result File (10+ Students)</h2>
-  <input type="file" id="fileInput" accept=".txt" />
-  <button id="uploadBtn">Upload teacher.txt</button>
+    // --- MANUAL FORM LOGIC ---
+    document.getElementById('manualForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            studentId: document.getElementById('studentId').value.trim(),
+            courseCode: document.getElementById('courseCode').value.trim(),
+            score: Number(document.getElementById('score').value),
+            semester: document.getElementById('semester').value,
+            department: userDept
+        };
+        await postData(data, "Result saved successfully!");
+    });
 
-  <script type="module" src="js/config.js"></script>
-  <script type="module" src="js/teacher.js"></script>
+    // --- BATCH UPLOAD LOGIC ---
+    document.getElementById('uploadBtn').addEventListener('click', () => {
+        const file = document.getElementById('fileInput').files[0];
+        if (!file) return notify("Please choose a .txt file", "red");
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const rows = event.target.result.split('\n').filter(row => row.trim() !== "");
+            notify(`Uploading ${rows.length} records...`, "blue");
+
+            for (let row of rows) {
+                const parts = row.split(',');
+                const obj = { department: userDept };
+                parts.forEach(p => {
+                    const [k, v] = p.split(':').map(s => s.trim());
+                    obj[k] = k === 'score' ? Number(v) : v;
+                });
+                await postData(obj);
+            }
+            notify("Batch Upload Complete!", "green");
+        };
+        reader.readAsText(file);
+    });
+
+    // --- API CALLER ---
+    async function postData(payload, msg) {
+        try {
+            const res = await fetch(API_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": jwtToken
+                },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok && msg) notify(msg, "green");
+            if (!res.ok) throw new Error("API rejected the request");
+        } catch (err) {
+            notify("Error: " + err.message, "red");
+        }
+    }
+
+    function notify(text, color) {
+        const box = document.getElementById('statusMsg');
+        box.innerText = text;
+        box.style.display = "block";
+        box.style.background = color === "red" ? "#fee2e2" : (color === "blue" ? "#dbeafe" : "#dcfce7");
+        box.style.color = color === "red" ? "#b91c1c" : (color === "blue" ? "#1e40af" : "#15803d");
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "signin.html";
+    }
+</script>
 </body>
 </html>
