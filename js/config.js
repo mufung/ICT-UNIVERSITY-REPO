@@ -1,4 +1,6 @@
- // js/config.js
+/*
+
+// js/config.js
 window.appConfig = {
     cognito: {
         region: "us-west-1",
@@ -9,3 +11,6 @@ window.appConfig = {
         baseUrl: "https://7qpx0plfwg.execute-api.us-west-1.amazonaws.com/dev"
     }
 };
+
+
+*/
