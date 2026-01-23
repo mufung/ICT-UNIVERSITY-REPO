@@ -1,4 +1,5 @@
- window.appConfig = {
+ // js/config.js
+window.appConfig = {
     cognito: {
         region: "us-west-1",
         userPoolId: "us-west-1_mbnfq4DcV",
