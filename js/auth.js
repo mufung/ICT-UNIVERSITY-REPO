@@ -1,50 +1,41 @@
-/*
+ // THIS FILE NOW CONTAINS THE CONFIG AND THE LOGIN LOGIC
+const poolData = {
+    UserPoolId: "us-west-1_mbnfq4DcV",
+    ClientId: "7ugvqkg6l7859oto4v5vcjqjus" 
+};
 
-// js/auth.js
-window.loginUser = async function(email, password) {
-    const SDK = window.AmazonCognitoIdentity;
-    const cfg = window.appConfig;
-
-    if (!SDK) {
-        throw new Error("AWS Cognito SDK failed to load. Check your internet connection.");
+function handleLogin(email, password, messageElement, buttonElement) {
+    // 1. Check if the SDK is loaded from the HTML script tag
+    if (typeof AmazonCognitoIdentity === 'undefined') {
+        messageElement.innerText = "Security Library blocked. Please use Incognito Mode.";
+        messageElement.style.display = "block";
+        buttonElement.disabled = false;
+        buttonElement.innerText = "Sign In";
+        return;
     }
 
-    const poolData = {
-        UserPoolId: cfg.cognito.userPoolId,
-        ClientId: cfg.cognito.clientId
-    };
-    
-    const userPool = new SDK.CognitoUserPool(poolData);
-    const authDetails = new SDK.AuthenticationDetails({
+    const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
         Username: email,
         Password: password
     });
-    
-    const cognitoUser = new SDK.CognitoUser({
+    const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
         Pool: userPool
     });
 
-    return new Promise((resolve, reject) => {
-        cognitoUser.authenticateUser(authDetails, {
-            onSuccess: (result) => {
-                const idToken = result.getIdToken().decodePayload();
-                
-                // Store Access Token for API calls and Role for page access
-                localStorage.setItem('userToken', result.getAccessToken().getJwtToken());
-                localStorage.setItem('userDept', idToken['custom:department'] || "Computer Science");
-                
-                const groups = idToken['cognito:groups'] || [];
-                const role = groups.includes('Teachers') ? 'Teachers' : 'Students';
-                localStorage.setItem('userRole', role);
-                
-                resolve({ role: role });
-            },
-            onFailure: (err) => {
-                reject(new Error(err.message || "Invalid email or password."));
-            }
-        });
+    cognitoUser.authenticateUser(authDetails, {
+        onSuccess: (result) => {
+            const token = result.getAccessToken().getJwtToken();
+            localStorage.setItem('userToken', token);
+            // Redirect based on the URL or a specific page
+            window.location.href = "dashboard_teacher.html";
+        },
+        onFailure: (err) => {
+            messageElement.innerText = err.message || "Invalid Email or Password";
+            messageElement.style.display = "block";
+            buttonElement.disabled = false;
+            buttonElement.innerText = "Sign In";
+        }
     });
-};
-
-*/
+}
